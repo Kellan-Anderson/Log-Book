@@ -33,3 +33,30 @@ function App() {
 }
 
 export default App
+
+/*
+
+{
+  spending: {
+    accounts: [
+      {
+        name: string,
+        transactions: [
+          {
+            date: date,
+            amount: number,
+            type: 'withdraw' | 'deposit'
+          }
+        ]
+      }
+    ]
+  },
+  time: {
+    jobs: [
+      punches:
+    ]
+  },
+  calories: {}
+}
+
+*/
