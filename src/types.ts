@@ -5,14 +5,24 @@ export const transactionSchema = z.object({
   date: z.date(),
   amount: z.number(),
   type: z.enum(['withdraw', 'deposit']),
+  budgetArea: z.string(),
   notes: z.string().optional()
 });
 export type transaction = z.infer<typeof transactionSchema>
 
+export const budgetSchema = z.object({
+  name: z.string(),
+  alloted: z.number(),
+  spent: z.number(),
+  description: z.string().optional()
+});
+export type budget = z.infer<typeof budgetSchema>;
+
 export const accountSchema = z.object({
   name: z.string(),
-  transactions: transactionSchema.array()
-})
+  transactions: transactionSchema.array(),
+  budgets: budgetSchema.array()
+}).array()
 export type account = z.infer<typeof accountSchema>
 
 export const timePunchSchema = z.object({
