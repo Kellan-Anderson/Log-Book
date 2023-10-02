@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Apple, CircleDollarSign, Clock, type LucideIcon } from "lucide-react"
 import React, { ReactElement } from "react";
 
-export default function WelcomeArea() {
+export default function WelcomePage() {
   return (
     <>
       <Card className="lg:h-full h-fit overflow-y-auto">
