@@ -1,4 +1,4 @@
-import { Card, CardHeader, } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
@@ -37,8 +37,8 @@ export default function SpendingPage() {
     <div className="h-full flex flex-col">
       <h3 className="text-2xl font-semibold leading-none tracking-tight whitespace-nowrap pb-3">Spending Tracker</h3>
       <Card className="grow">
-        <CardHeader>
-          <Tabs defaultValue="spending">
+        <Tabs defaultValue="spending" className="h-full flex flex-col">
+          <CardHeader>
             <div className="flex flex-col lg:flex-row gap-2">
               <TabsList className="grid grid-cols-3 w-full lg:w-fit">
                 <TabsTrigger value="spending">Spending</TabsTrigger>
@@ -56,11 +56,13 @@ export default function SpendingPage() {
                 </SelectContent>
               </Select>
             </div>
-            <TabsContent value="spending">
+          </CardHeader>
+          <CardContent className="h-full">
+            <TabsContent value="spending" className="h-full">
               <SpendingCard accountName={selectedAccount} />
             </TabsContent>
-          </Tabs>
-        </CardHeader>
+          </CardContent>
+        </Tabs>
       </Card>
     </div>
   );

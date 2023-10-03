@@ -1,6 +1,9 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { account } from "@/types";
 import { useRef } from "react";
-import { LineChart, Line } from "recharts"
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
+import { TransactionCard } from "./transaction-components";
 
 
 const account: account = {
@@ -69,26 +72,31 @@ const account: account = {
 
 export default function SpendingCard({ accountName } : { accountName: string | undefined }) {
 
-  const divRef = useRef<HTMLDivElement | null>(null);
-
-  const height = divRef.current?.getBoundingClientRect().height;
-  const width = divRef.current?.getBoundingClientRect().width;
-
   return (
-    <>
-      <h3>Testing</h3>
-      <div className="h-full w-full" ref={divRef}>
-        <LineChart data={account.transactions} height={height} width={width} >
-          <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-        </LineChart>
+    <div className="h-full flex flex-col">
+      <div className="h-96 flex flex-col">
+        <Card className="grow p-12">
+          <ResponsiveContainer>
+              <LineChart data={account.transactions} >
+                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+                <XAxis />
+                <Tooltip />
+              </LineChart>
+            </ResponsiveContainer>
+        </Card>
+        <div className="w-full flex justify-center pt-8">
+          <Button 
+            className="w-fit text-lg px-12 rounded-xl"
+            variant="secondary"
+          >
+            Log Transaction
+          </Button>
+        </div>
       </div>
-    </>
+      <h1 className="text-3xl leading-none tracking-tight font-semibold py-3">Transactions</h1>
+      <div className="flex flex-col gap-1.5">
+        {account.transactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
+      </div>
+    </div>
   );
 }
-
-/*
-
-
-
-
-*/
