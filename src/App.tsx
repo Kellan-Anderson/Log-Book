@@ -21,11 +21,13 @@ export default function App() {
   
 
   return (
-    <Provider store={store}>
-      <div className="w-full h-screen p-4">
-        <RouterProvider router={router} />
-      </div>
-      <Toaster />
-    </Provider>
+    <div className="dark">
+      <Provider store={store}>
+        <div className="w-full h-screen p-4">
+          <RouterProvider router={router} />
+        </div>
+        <Toaster />
+      </Provider>
+    </div>
   )
 }

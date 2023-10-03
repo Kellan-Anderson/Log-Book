@@ -12,7 +12,7 @@ export type transaction = z.infer<typeof transactionSchema>
 
 export const budgetSchema = z.object({
   name: z.string(),
-  alloted: z.number(),
+  alloted: z.number().optional(),
   spent: z.number(),
   description: z.string().optional()
 });
@@ -22,7 +22,7 @@ export const accountSchema = z.object({
   name: z.string(),
   transactions: transactionSchema.array(),
   budgets: budgetSchema.array()
-}).array()
+})
 export type account = z.infer<typeof accountSchema>
 
 export const timePunchSchema = z.object({

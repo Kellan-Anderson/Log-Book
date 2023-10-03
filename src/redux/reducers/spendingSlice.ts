@@ -15,7 +15,7 @@ const SpendingSlice = createSlice({
     setInitialAccounts: (state, action: PayloadAction<account[]>) => action.payload,
     addAccount: (state, action: PayloadAction<account>) => [ ...state, action.payload ],
     deleteAccount: (state, action: PayloadAction<string>) => {
-      return state.filter(account => account.name !== action.payload)
+      return state.filter(acc => acc.name !== action.payload)
     },
     editAccount: (state, action: PayloadAction<account>) => {
       const newAccounts = state.map(account => {
@@ -32,7 +32,8 @@ const SpendingSlice = createSlice({
         if(account.name === action.payload.accountName) {
           return {
             name: account.name,
-            transactions: [...account.transactions, action.payload.transaction]
+            transactions: [...account.transactions, action.payload.transaction],
+            budgets: account.budgets
           }
         }
         return account;
@@ -61,7 +62,8 @@ const SpendingSlice = createSlice({
           const editedTransactions = acc.transactions.map(t => t.id === transaction.id ? transaction : t);
           return {
             name: acc.name,
-            transactions: editedTransactions
+            transactions: editedTransactions,
+            budgets: acc.budgets
           }
         }
         return acc
