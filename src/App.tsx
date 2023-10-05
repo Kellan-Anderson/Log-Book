@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { Toaster } from "./components/ui/toaster";
+import { ThemeProvider } from "./components/ui/themeProvider";
 
 export default function App() {
 
@@ -21,13 +22,13 @@ export default function App() {
   
 
   return (
-    <div className="dark">
+    <ThemeProvider>
       <Provider store={store}>
         <div className="w-full h-screen p-4 flex flex-col">
           <RouterProvider router={router} />
         </div>
         <Toaster />
       </Provider>
-    </div>
+    </ThemeProvider>
   )
 }
