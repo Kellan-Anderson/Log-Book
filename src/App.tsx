@@ -23,7 +23,7 @@ export default function App() {
   return (
     <div className="dark">
       <Provider store={store}>
-        <div className="w-full h-screen p-4">
+        <div className="w-full h-screen p-4 flex flex-col">
           <RouterProvider router={router} />
         </div>
         <Toaster />

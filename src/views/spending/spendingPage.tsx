@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,6 +6,8 @@ import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
 import { accountSchema } from "@/types";
 import { useEffect, useState } from "react";
 import SpendingCard from "./spendingCard";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react"
 
 export default function SpendingPage() {
 
@@ -34,37 +35,32 @@ export default function SpendingPage() {
   }, []);
   
   return (
-    <div className="h-full flex flex-col">
-      <h3 className="text-2xl font-semibold leading-none tracking-tight whitespace-nowrap pb-3">Spending Tracker</h3>
-      <Card className="grow">
-        <Tabs defaultValue="spending" className="h-full flex flex-col">
-          <CardHeader>
-            <div className="flex flex-col lg:flex-row gap-2">
-              <TabsList className="grid grid-cols-3 w-full lg:w-fit">
-                <TabsTrigger value="spending">Spending</TabsTrigger>
-                <TabsTrigger value="budget">Budget</TabsTrigger>
-                <TabsTrigger value="history">History</TabsTrigger>
-              </TabsList>
-              <Select onValueChange={(val) => setSelectedAccount(val)}>
-                <SelectTrigger className="w-full lg:w-fit min-w-max">
-                  <SelectValue placeholder="Choose an account" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="test1">Test1</SelectItem>
-                  <SelectItem value="test2">Test2</SelectItem>
-                  <SelectItem value="test3">Test3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardHeader>
-          <CardContent className="h-full">
-            <TabsContent value="spending" className="h-full">
-              <SpendingCard accountName={selectedAccount} />
-            </TabsContent>
-          </CardContent>
-        </Tabs>
-      </Card>
-    </div>
+    <>
+      <h1 className="w-full text-center">Spending</h1>
+      <Tabs defaultValue="spending" className="flex flex-col grow">
+        <TabsList className="h-7 w-full flex mt-2">
+          <TabsTrigger value="spending" className="p-[2px] grow">Spending</TabsTrigger>
+          <TabsTrigger value="budget" className="p-[2px] grow">Budget</TabsTrigger>
+          <TabsTrigger value="history" className="p-[2px] grow">History</TabsTrigger>
+        </TabsList>
+        <Select>
+          <SelectTrigger className="mt-2">
+            <SelectValue placeholder="Select an account" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="test1">Test 1</SelectItem>
+            <SelectItem value="test2">Test 2</SelectItem>
+            <SelectItem value="test3">Test 3</SelectItem>
+          </SelectContent>
+        </Select>
+        <TabsContent value="spending" className="grow">
+          <SpendingCard accountName="" />
+        </TabsContent>
+      </Tabs>
+      <Button className="rounded-full p-0 px-2 fixed bottom-0 right-0 mb-8 mr-8 overflow-hidden">
+        <Plus/>
+      </Button>
+    </>
   );
 }
 

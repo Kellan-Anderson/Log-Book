@@ -4,6 +4,7 @@ import { account } from "@/types";
 import { useRef } from "react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { TransactionCard } from "./transaction-components";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 
 const account: account = {
@@ -63,6 +64,34 @@ const account: account = {
       budgetArea: 'groceries',
       type: 'withdraw'
     },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
   ],
   name: 'Test account 1'
 }
@@ -73,30 +102,31 @@ const account: account = {
 export default function SpendingCard({ accountName } : { accountName: string | undefined }) {
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="h-96 flex flex-col">
-        <Card className="grow p-12">
-          <ResponsiveContainer>
-              <LineChart data={account.transactions} >
-                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-                <XAxis />
-                <Tooltip />
-              </LineChart>
-            </ResponsiveContainer>
-        </Card>
-        <div className="w-full flex justify-center pt-8">
-          <Button 
-            className="w-fit text-lg px-12 rounded-xl"
-            variant="secondary"
-          >
-            Log Transaction
-          </Button>
-        </div>
-      </div>
-      <h1 className="text-3xl leading-none tracking-tight font-semibold py-3">Transactions</h1>
-      <div className="flex flex-col gap-1.5">
+    <div className="h-full w-full grid grid-rows-5">
+      <ResponsiveContainer className="row-span-2">
+        <LineChart data={account.transactions} >
+          <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+          <XAxis />
+          <Tooltip />
+        </LineChart>
+      </ResponsiveContainer>
+      <div className="row-span-3">
         {account.transactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
       </div>
     </div>
   );
 }
+
+/*
+
+<ResponsiveContainer>
+  
+</ResponsiveContainer>
+
+
+      <h1 className="text-3xl leading-none tracking-tight font-semibold py-3">Transactions</h1>
+      <div className="flex flex-col gap-1.5">
+        {account.transactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
+      </div>
+
+*/
