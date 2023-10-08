@@ -57,7 +57,7 @@ export default function SpendingPage() {
           <SpendingCard accountName="" />
         </TabsContent>
       </Tabs>
-      <Button className="rounded-full p-0 px-2 fixed bottom-0 right-0 mb-8 mr-8 overflow-hidden">
+      <Button className="rounded-full p-0 px-2 fixed bottom-0 right-0 mb-8 mr-8 overflow-hidden lg:hidden">
         <Plus/>
       </Button>
     </>

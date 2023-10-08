@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { account } from "@/types";
-import { useRef } from "react";
+import { account, transaction } from "@/types";
+import { useEffect, useRef, useState } from "react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { TransactionCard } from "./transaction-components";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -92,41 +92,86 @@ const account: account = {
       budgetArea: 'groceries',
       type: 'withdraw'
     },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
+    {
+      id: '4',
+      date: new Date('2023-09-29T08:34:56'),
+      amount: 50,
+      budgetArea: 'groceries',
+      type: 'withdraw'
+    },
   ],
   name: 'Test account 1'
 }
 
-
-
-
 export default function SpendingCard({ accountName } : { accountName: string | undefined }) {
 
+  const [scrollHeight, setScrollHeight] = useState<number>();
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if(scrollAreaRef.current) {
+      setScrollHeight(scrollAreaRef.current.getBoundingClientRect().height);
+      console.log(scrollAreaRef.current.getBoundingClientRect().height)
+    }
+  }, []);
+
+
+  const { transactions } = account;
+
   return (
-    <div className="h-full w-full grid grid-rows-5">
-      <ResponsiveContainer className="row-span-2">
-        <LineChart data={account.transactions} >
-          <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-          <XAxis />
-          <Tooltip />
-        </LineChart>
-      </ResponsiveContainer>
-      <div className="row-span-3">
-        {account.transactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
-      </div>
+    <div className="h-full w-full border border-white grid grid-cols-3">
+      <span className="border border-blue-400 col-span-2 p-6">
+        <Graph data={transactions} />
+      </span>
+      
     </div>
   );
 }
 
-/*
+function TransactionsList({ data } : { data: transaction[] }) {
+  return (
+    <>
+      {account.transactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
+    </>
+  );
+}
 
-<ResponsiveContainer>
-  
-</ResponsiveContainer>
-
-
-      <h1 className="text-3xl leading-none tracking-tight font-semibold py-3">Transactions</h1>
-      <div className="flex flex-col gap-1.5">
-        {account.transactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
-      </div>
-
-*/
+function Graph({ data } : { data: transaction[]}) {
+  return (
+    <ResponsiveContainer>
+      <LineChart data={data}>
+        <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+        <XAxis />
+        <Tooltip />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}
