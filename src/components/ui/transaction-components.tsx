@@ -2,6 +2,16 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { transaction } from "@/types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
+import { Tabs, TabsList, TabsTrigger } from "./tabs";
+import { useRef, useState } from "react";
+import { Input } from "./input";
+import { Label } from "./label";
+import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
+import { Textarea } from "./textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
+import { useAppSelector } from "@/redux/redux-hooks";
+import { Button } from "./button";
 
 dayjs.extend(relativeTime);
 
@@ -41,15 +51,64 @@ export function TransactionCard({ transaction } : { transaction: transaction }) 
   );
 }
 
-/*
+export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onOpenChange: (arg0: boolean) => void }) {
+  const transactionType = useRef<string>('withdraw');
+  const account = useAppSelector(state => state.selectedAccount);
 
-px-3
-py-1.5
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-<p className="font-semibold text-right">${amount}</p>
-        
+  type TransactionFormType = {
+    amount: number,
+    notes: string
+  }
+  const { register, handleSubmit} = useForm<TransactionFormType>();
 
+  const onFormSubmit: SubmitHandler<TransactionFormType> = (values) => {}
+  const onFormSubmitError: SubmitErrorHandler<TransactionFormType> = (values) => {}
 
-        
-        <p>{budgetArea}</p>
-*/
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Transaction</DialogTitle>
+        </DialogHeader>
+        <form>
+          <Tabs defaultValue="withdraw" onValueChange={(val) => transactionType.current = val}>
+            <TabsList className="w-full grid grid-cols-2">
+              <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
+              <TabsTrigger value="deposit">Deposit</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <div className="flex flex-row justify-center items-center gap-2">
+            <Label htmlFor="amount" className="text-lg">Amount:</Label>
+            <Input
+              type="number"
+              id="amount"
+              {...register('amount', {
+                required: 'Please enter an amount'
+              })}
+            />
+          </div>
+          <Label htmlFor="budgetSelector">Select a budget</Label>
+          <Select>
+            <SelectTrigger defaultValue="miscellaneous" id="budgetSelector">
+              <SelectValue placeholder="Misc." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="miscellaneous">Misc.</SelectItem>
+              {account.budgets.map(budget => (
+                <SelectItem value={budget.name} key={budget.name}>{budget.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Label htmlFor="notes">Notes:</Label>
+          <Textarea
+            id="notes"
+            {...register('notes')}
+          />
+          <Button type="submit">Add</Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

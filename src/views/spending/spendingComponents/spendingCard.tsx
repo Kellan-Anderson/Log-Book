@@ -3,12 +3,14 @@ import { ValueType, NameType } from "recharts/types/component/DefaultTooltipCont
 
 
 import { transaction, account } from "@/types";
-import { TransactionCard } from "@/components/ui/transaction-components";
-import { Button, ButtonProps } from "@/components/ui/button";
+import { AddTransaction, TransactionCard } from "@/components/ui/transaction-components";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLastNDays, getNPreviousTransactions, getTotalDeposit, getTotalWithdraw } from "@/lib/helpers";
 import dayjs from "dayjs";
 import { Plus } from "lucide-react";
+import { useAppSelector } from "@/redux/redux-hooks";
+import { useState } from "react";
 
 // TEST DATA
 const account: account = {
@@ -109,39 +111,49 @@ const account: account = {
   name: 'Test account 1'
 }
 
-export default function SpendingCard() {
-  const { transactions } = account;
+export default function SpendingCard({ accountName } : { accountName?: string }) {
+  const accountsData = useAppSelector(state => state.spending);
+  const account = accountsData.filter(acc => acc.name === accountName).at(0);
+
+  const [addTransactionOpen, setAddTransactionOpen] = useState(false);
+
+  const transactions = account === undefined ? [] : account.transactions;
 
   const pastFiveTransactions = getNPreviousTransactions(transactions);
 
-  const onAddTransactionClick = () => {}
+  const onAddTransactionClick = () => {
+    setAddTransactionOpen(true);
+  }
 
   return (
-    <div className="h-full flex flex-col">
-      <h1 className="text-2xl font-semibold py-2">Spending</h1>
-      <div className="w-full lg:grid lg:grid-cols-5 gap-2 grow">
-        <Card className="col-span-3 px-3 flex flex-col h-1/3 lg:h-full">
-          <CardTitle className="pt-3">Previous Five days</CardTitle>
-          <div className="grow">
-            <Graph data={pastFiveTransactions} />
-          </div>
-        </Card>
-        <div className="col-span-2 flex flex-col justify-between gap-2 lg:h-full pt-2 lg:pt-0">
-          <Card className="p-2">
-            <CardTitle className="pb-2">Previous Transactions:</CardTitle>
-            {pastFiveTransactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
+    <>
+      <div className="h-full flex flex-col">
+        <h1 className="text-2xl font-semibold py-2">Spending</h1>
+        <div className="w-full lg:grid lg:grid-cols-5 gap-2 grow">
+          <Card className="col-span-3 px-3 flex flex-col h-1/3 lg:h-full">
+            <CardTitle className="pt-3">Previous Five days</CardTitle>
+            <div className="grow">
+              <Graph data={pastFiveTransactions} />
+            </div>
           </Card>
-          <div className="grow w-full grid grid-cols-2 gap-1 pb-14 lg:pb-0">
-            <TotalsCard amount={getTotalWithdraw(transactions)} creditOrDebit="debit" />
-            <TotalsCard amount={getTotalDeposit(transactions)} creditOrDebit="credit" />
+          <div className="col-span-2 flex flex-col justify-between gap-2 lg:h-full pt-2 lg:pt-0">
+            <Card className="p-2">
+              <CardTitle className="pb-2">Previous Transactions:</CardTitle>
+              {pastFiveTransactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
+            </Card>
+            <div className="grow w-full grid grid-cols-2 gap-1 pb-14 lg:pb-0">
+              <TotalsCard amount={getTotalWithdraw(transactions)} creditOrDebit="debit" />
+              <TotalsCard amount={getTotalDeposit(transactions)} creditOrDebit="credit" />
+            </div>
+            <Button className="hidden lg:block" onClick={onAddTransactionClick}>
+              Add a transaction
+            </Button>
+            <FloatingActionButton className="lg:hidden" onClick={onAddTransactionClick}/>
           </div>
-          <Button className="hidden lg:block" onClick={onAddTransactionClick}>
-            Add a transaction
-          </Button>
-          <FloatingActionButton className="lg:hidden" onClick={onAddTransactionClick}/>
         </div>
       </div>
-    </div>
+      <AddTransaction isOpen={addTransactionOpen} onOpenChange={setAddTransactionOpen} />
+    </>
   );
 }
 
@@ -157,7 +169,7 @@ function Graph({ data } : { data: transaction[] }) {
       return (
         <div className="bg-secondary p-2">
           <p>Date: {transactionDate}</p>
-          <p>{`Amount: $${payload[0].value}`}</p>
+          <p>{`Amount: $${payload?.at(0)?.value || 'Error'}`}</p>
         </div>
       );
     }

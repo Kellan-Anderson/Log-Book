@@ -1,8 +1,45 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SpendingCard from "./spendingComponents/spendingCard";
+import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
+import { useEffect } from "react";
+import { setInitialAccounts } from "@/redux/reducers/spendingSlice";
+import { accountSchema } from "@/types";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SpendingPage() {
+
+  const accountsData = useAppSelector(state => state.spending);
+  const dispatch = useAppDispatch();
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const localStorageData = localStorage.getItem('spending');
+
+    try {
+      if(localStorageData) {
+        const data = accountSchema.array().parse(JSON.parse(localStorageData));
+        dispatch(setInitialAccounts(data));
+      } else {
+        dispatch(setInitialAccounts([]))
+      }
+    } catch (e) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'There was an error loading from local storage'
+      });
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if(accountsData.length !== 0) {
+      localStorage.setItem('spending', JSON.stringify(accountsData))
+    }
+  }, [accountsData]);
+
   return (
     <div className="h-full w-full ">
       <Tabs defaultValue="spending" className="w-full h-full flex flex-col">

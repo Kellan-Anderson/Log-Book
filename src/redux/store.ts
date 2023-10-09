@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import spendingSlice from "./reducers/spendingSlice";
+import selectedAccountSlice from "./reducers/selectedAccountSlice";
 
 export const store = configureStore({
   reducer: {
-    spending: spendingSlice
+    spending: spendingSlice,
+    selectedAccount: selectedAccountSlice
   }
 })
 
