@@ -63,8 +63,14 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
   }
   const { register, handleSubmit} = useForm<TransactionFormType>();
 
-  const onFormSubmit: SubmitHandler<TransactionFormType> = (values) => {}
-  const onFormSubmitError: SubmitErrorHandler<TransactionFormType> = (values) => {}
+  const onFormSubmit: SubmitHandler<TransactionFormType> = (values) => {
+    const transaction: transaction = {
+      
+    }
+  }
+  const onFormSubmitError: SubmitErrorHandler<TransactionFormType> = (values) => {
+    setErrorMessage(values.amount?.message);
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -72,7 +78,7 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
         <DialogHeader>
           <DialogTitle>Add Transaction</DialogTitle>
         </DialogHeader>
-        <form>
+        <form onSubmit={handleSubmit(onFormSubmit, onFormSubmitError)}>
           <Tabs defaultValue="withdraw" onValueChange={(val) => transactionType.current = val}>
             <TabsList className="w-full grid grid-cols-2">
               <TabsTrigger value="withdraw">Withdraw</TabsTrigger>

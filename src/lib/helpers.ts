@@ -32,3 +32,15 @@ export function getLastNDays(transactions: transaction[], numDays: number = 5) {
 
   return transactions.filter(t => t.date > earlier );
 }
+
+export function generateId(
+  { length = 5, prefix = '' } : {length?: number, prefix?: string}
+) {
+  const key = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0987654321";
+  let id = '';
+  for(let i = 0; i < length; i++) {
+    const randChar = key[Math.floor(Math.random() * key.length)]
+    id = id + randChar;
+  }
+  return prefix + id;
+}

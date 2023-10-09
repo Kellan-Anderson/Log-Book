@@ -3,17 +3,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SpendingCard from "./spendingComponents/spendingCard";
 import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
 import { useEffect } from "react";
-import { setInitialAccounts } from "@/redux/reducers/spendingSlice";
+import { changeAccount, setInitialAccounts } from "@/redux/reducers/spendingSlice";
 import { accountSchema } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function SpendingPage() {
 
   const accountsData = useAppSelector(state => state.spending);
+  const selectedAccount = useAppSelector(state => state.selectedAccount);
   const dispatch = useAppDispatch();
 
   const { toast } = useToast();
 
+  // Loads data from local storage when the component mounts
   useEffect(() => {
     const localStorageData = localStorage.getItem('spending');
 
@@ -34,11 +36,19 @@ export default function SpendingPage() {
     }
   }, []);
 
+  // Writes data to local storage when the redux store changes
   useEffect(() => {
     if(accountsData.length !== 0) {
       localStorage.setItem('spending', JSON.stringify(accountsData))
     }
   }, [accountsData]);
+
+  // Updates the Spending slice when the selected account slice changes
+  useEffect(() => {
+    if(selectedAccount.name !== '') {
+      dispatch(changeAccount(selectedAccount))
+    }
+  }, [selectedAccount]);
 
   return (
     <div className="h-full w-full ">
