@@ -1,67 +1,50 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/components/ui/use-toast";
-import { setInitialAccounts } from "@/redux/reducers/spendingSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
-import { accountSchema } from "@/types";
-import { useEffect, useState } from "react";
-import SpendingCard from "./spendingCard";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react"
+import SpendingCard from "./spendingComponents/spendingCard";
 
 export default function SpendingPage() {
-
-  const accounts = useAppSelector(state => state.spending);
-  const [selectedAccount, setSelectedAccount] = useState(accounts.at(0)?.name)
-  const dispatch = useAppDispatch();
-
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const localStorageData = localStorage.getItem('spending');
-    if(localStorageData !== null) {
-      try {
-        const parsedData = accountSchema.array().parse(localStorageData);
-        dispatch(setInitialAccounts(parsedData));
-      } catch (err) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'There was an error getting your data.'
-        });
-        console.log(err);
-      }
-    }
-  }, []);
-  
   return (
-    <>
-      <h1 className="w-full text-center">Spending</h1>
-      <Tabs defaultValue="spending" className="flex flex-col grow">
-        <TabsList className="h-7 w-full flex mt-2">
-          <TabsTrigger value="spending" className="p-[2px] grow">Spending</TabsTrigger>
-          <TabsTrigger value="budget" className="p-[2px] grow">Budget</TabsTrigger>
-          <TabsTrigger value="history" className="p-[2px] grow">History</TabsTrigger>
-        </TabsList>
-        <Select>
-          <SelectTrigger className="mt-2">
-            <SelectValue placeholder="Select an account" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="test1">Test 1</SelectItem>
-            <SelectItem value="test2">Test 2</SelectItem>
-            <SelectItem value="test3">Test 3</SelectItem>
-          </SelectContent>
-        </Select>
+    <div className="h-full w-full ">
+      <Tabs defaultValue="spending" className="w-full h-full flex flex-col">
+        <div className="flex flex-col lg:flex-row w-full lg:w-fit gap-1.5">
+          <TabsList className="grid grid-cols-3 w-full">
+            <TabsTrigger value="spending" className="px-5">Spending</TabsTrigger>
+            <TabsTrigger value="budget" className="px-5">Budget</TabsTrigger>
+            <TabsTrigger value="history" className="px-5">History</TabsTrigger>
+          </TabsList>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Choose an account" />
+            </SelectTrigger>
+            <SelectContent>
+              {/* TODO Change to loop over accounts from redux store */}
+              <SelectItem value="Account1">Account 1</SelectItem>
+              <SelectItem value="Account2">Account 2</SelectItem>
+              <SelectItem value="Account3">Account 3</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <TabsContent value="spending" className="grow">
-          <SpendingCard accountName="" />
+          <SpendingCard />
+        </TabsContent>
+        <TabsContent value="budget" className="grow">
+          budget
+        </TabsContent>
+        <TabsContent value="history" className="grow">
+          history
         </TabsContent>
       </Tabs>
-      <Button className="rounded-full p-0 px-2 fixed bottom-0 right-0 mb-8 mr-8 overflow-hidden lg:hidden">
-        <Plus/>
-      </Button>
-    </>
+    </div>
   );
 }
 
-// <h3 className="text-2xl font-semibold leading-none tracking-tight whitespace-nowrap">Spending Tracker</h3>
+// Need to have:
+/**
+
+graph,
+total deposited,
+total spent
+previous 5 transactions
+button to add transaction
+
+ */
