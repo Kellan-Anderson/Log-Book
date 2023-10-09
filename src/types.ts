@@ -10,6 +10,15 @@ export const transactionSchema = z.object({
 });
 export type transaction = z.infer<typeof transactionSchema>
 
+export type PartialTransaction = {
+  type: 'withdraw' | 'deposit',
+  amount: number,
+  budgetArea: string,
+  id?: string,
+  notes?: string,
+  date?: Date
+}
+
 export const budgetSchema = z.object({
   name: z.string(),
   alloted: z.number().optional(),

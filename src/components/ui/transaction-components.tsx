@@ -1,5 +1,5 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { transaction } from "@/types";
+import { PartialTransaction, transaction } from "@/types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
@@ -10,8 +10,9 @@ import { Label } from "./label";
 import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 import { Textarea } from "./textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
-import { useAppSelector } from "@/redux/redux-hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
 import { Button } from "./button";
+import { addTransaction } from "@/redux/reducers/selectedAccountSlice";
 
 dayjs.extend(relativeTime);
 
@@ -52,8 +53,11 @@ export function TransactionCard({ transaction } : { transaction: transaction }) 
 }
 
 export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onOpenChange: (arg0: boolean) => void }) {
-  const transactionType = useRef<string>('withdraw');
+  const transactionType = useRef<'withdraw' | 'deposit'>('withdraw');
+  const budgetArea = useRef<string>('miscellaneous')
+
   const account = useAppSelector(state => state.selectedAccount);
+  const dispatch = useAppDispatch();
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
@@ -64,9 +68,14 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
   const { register, handleSubmit} = useForm<TransactionFormType>();
 
   const onFormSubmit: SubmitHandler<TransactionFormType> = (values) => {
-    const transaction: transaction = {
-      
+    const transaction: PartialTransaction = {
+      amount: values.amount,
+      budgetArea: budgetArea.current,
+      type: transactionType.current,
+      date: new Date(),
+      notes: values.notes
     }
+    dispatch(addTransaction(transaction));
   }
   const onFormSubmitError: SubmitErrorHandler<TransactionFormType> = (values) => {
     setErrorMessage(values.amount?.message);
@@ -79,7 +88,10 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
           <DialogTitle>Add Transaction</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onFormSubmit, onFormSubmitError)}>
-          <Tabs defaultValue="withdraw" onValueChange={(val) => transactionType.current = val}>
+          <Tabs
+            defaultValue="withdraw"
+            onValueChange={(val) => transactionType.current = val === 'withdraw' ? val : 'deposit'}
+          >
             <TabsList className="w-full grid grid-cols-2">
               <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
               <TabsTrigger value="deposit">Deposit</TabsTrigger>
@@ -112,6 +124,7 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
             id="notes"
             {...register('notes')}
           />
+          {errorMessage && <p className="text-sm font-semibold text-red-500">{errorMessage}</p>}
           <Button type="submit">Add</Button>
         </form>
       </DialogContent>

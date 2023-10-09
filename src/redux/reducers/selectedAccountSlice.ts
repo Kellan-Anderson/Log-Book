@@ -1,15 +1,7 @@
 import { generateId } from "@/lib/helpers";
 import { account, transaction } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-
-type PartialTransaction = {
-  type: 'withdraw' | 'deposit',
-  amount: number,
-  budgetArea: string,
-  id?: string,
-  notes?: string,
-  date?: Date
-}
+import { PartialTransaction } from "@/types"
 
 const initialState: account = {
   budgets: [],
@@ -21,11 +13,11 @@ const selectedAccountSlice = createSlice({
   initialState,
   name: 'selectedAccountSlice',
   reducers: {
-    setSelectedAccount: (state, action: PayloadAction<account>) => action.payload,
+    setSelectedAccount: (_state, action: PayloadAction<account>) => action.payload,
 
     addTransaction: (state, action: PayloadAction<PartialTransaction>) => {
       const { amount, budgetArea, type, date, id, notes } = action.payload;
-      
+
       const newTransaction: transaction = {
         amount,
         budgetArea,
@@ -44,5 +36,5 @@ const selectedAccountSlice = createSlice({
 
 });
 
-export const { setSelectedAccount } = selectedAccountSlice.actions;
+export const { addTransaction, setSelectedAccount } = selectedAccountSlice.actions;
 export default selectedAccountSlice.reducer;

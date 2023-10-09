@@ -1,18 +1,14 @@
-import { account, transaction } from "@/types"
+import { account } from "@/types"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 const initialState: account[] = [];
 
-type accountTransactionIdentifier = {
-  accountName: string,
-  transaction: transaction
-}
 
 const SpendingSlice = createSlice({
   name: 'Spending',
   initialState,
   reducers: {
-    setInitialAccounts: (state, action: PayloadAction<account[]>) => action.payload,
+    setInitialAccounts: (_state, action: PayloadAction<account[]>) => action.payload,
 
     addAccount: (state, action: PayloadAction<account>) => {
       const { name } = action.payload;

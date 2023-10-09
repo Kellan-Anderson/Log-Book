@@ -34,7 +34,7 @@ export default function SpendingPage() {
       });
       console.error(e);
     }
-  }, []);
+  }, [dispatch, toast]);
 
   // Writes data to local storage when the redux store changes
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function SpendingPage() {
     if(selectedAccount.name !== '') {
       dispatch(changeAccount(selectedAccount))
     }
-  }, [selectedAccount]);
+  }, [selectedAccount, dispatch]);
 
   return (
     <div className="h-full w-full ">
