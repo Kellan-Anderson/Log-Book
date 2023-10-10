@@ -1,15 +1,5 @@
 import z from 'zod';
 
-export const transactionSchema = z.object({
-  id: z.string(),
-  date: z.string(),
-  amount: z.number(),
-  type: z.enum(['withdraw', 'deposit']),
-  budgetArea: z.string(),
-  notes: z.string().optional()
-});
-export type transaction = z.infer<typeof transactionSchema>
-
 export type PartialTransaction = {
   type: 'withdraw' | 'deposit',
   amount: number,
@@ -19,10 +9,20 @@ export type PartialTransaction = {
   date?: string
 }
 
+export const transactionSchema = z.object({
+  id: z.string(),
+  date: z.string(),
+  amount: z.coerce.number(),
+  type: z.enum(['withdraw', 'deposit']),
+  budgetArea: z.string(),
+  notes: z.string().optional()
+});
+export type transaction = z.infer<typeof transactionSchema>
+
 export const budgetSchema = z.object({
   name: z.string(),
-  alloted: z.number().optional(),
-  spent: z.number(),
+  alloted: z.coerce.number().optional(),
+  spent: z.coerce.number(),
   description: z.string().optional()
 });
 export type budget = z.infer<typeof budgetSchema>;
@@ -51,6 +51,6 @@ export type job = z.infer<typeof jobSchema>
 
 export const caloriesSchema = z.object({
   food: z.string(),
-  calories: z.number()
+  calories: z.coerce.number()
 }).array();
 export type calories = z.infer<typeof caloriesSchema>

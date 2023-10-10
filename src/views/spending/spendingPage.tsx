@@ -22,8 +22,14 @@ export default function SpendingPage() {
     const localStorageData = localStorage.getItem('spending');
     try {
       if(localStorageData) {
-        const data = accountSchema.array().parse(JSON.parse(localStorageData));
-        dispatch(setInitialAccounts(data));
+        const loadedData = JSON.parse(localStorageData);
+        const schemaParsedData = accountSchema.array().parse(loadedData);
+        dispatch(setInitialAccounts(schemaParsedData));
+
+        const defaultSelectedAccount = schemaParsedData.at(0)
+        if(defaultSelectedAccount) {
+          dispatch(setSelectedAccount(defaultSelectedAccount));
+        }
       } else {
         dispatch(setInitialAccounts([]))
       }
@@ -39,9 +45,7 @@ export default function SpendingPage() {
 
   // Writes data to local storage when the redux store changes
   useEffect(() => {
-    console.log('Change detected: ', accountsData);
     if(accountsData.length !== 0) {
-      console.log('Writing to LS')
       localStorage.setItem('spending', JSON.stringify(accountsData))
     }
   }, [accountsData]);
@@ -49,7 +53,6 @@ export default function SpendingPage() {
   // Updates the Spending slice when the selected account slice changes
   useEffect(() => {
     if(selectedAccount.name !== '') {
-      console.log('Detected selected account change')
       dispatch(changeAccount(selectedAccount))
     }
   }, [selectedAccount, dispatch]);
@@ -63,17 +66,20 @@ export default function SpendingPage() {
     }
   }
 
+  const defaultAccount = accountsData.at(0)?.name
+  console.log(defaultAccount)
+
   return (
     <>
       <div className="h-full w-full">
         <Tabs defaultValue="spending" className="w-full h-full flex flex-col">
           <div className="flex flex-col lg:flex-row w-full lg:w-fit gap-1.5">
             <TabsList className="grid grid-cols-3 w-full">
-              <TabsTrigger value="spending" className="px-5">Spending</TabsTrigger>
-              <TabsTrigger value="budget" className="px-5">Budget</TabsTrigger>
-              <TabsTrigger value="history" className="px-5">History</TabsTrigger>
+              <TabsTrigger value="spending" className="px-10">Spending</TabsTrigger>
+              <TabsTrigger value="budget">Budget</TabsTrigger>
+              <TabsTrigger value="history">History</TabsTrigger>
             </TabsList>
-            <Select onValueChange={onSelectAccountChange}>
+            <Select onValueChange={onSelectAccountChange} defaultValue={defaultAccount}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose an account" />
               </SelectTrigger>

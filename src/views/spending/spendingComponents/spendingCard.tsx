@@ -2,122 +2,30 @@ import { Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, } f
 import { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
 
 
-import { transaction, account } from "@/types";
+import { transaction } from "@/types";
 import { AddTransaction, TransactionCard } from "@/components/ui/transaction-components";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLastNDays, getNPreviousTransactions, getTotalDeposit, getTotalWithdraw } from "@/lib/helpers";
 import dayjs from "dayjs";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useAppSelector } from "@/redux/redux-hooks";
 import { useState } from "react";
 
-// TEST DATA
-const account: account = {
-  budgets: [
-    {
-      name: 'food',
-      spent: 100
-    },
-    {
-      name: 'wifi',
-      spent: 44.9
-    },
-    {
-      name: 'gas',
-      spent: 77.49
-    },
-    {
-      name: 'groceries',
-      spent: 50
-    }
-  ],
-  transactions: [
-    {
-      id: '0',
-      date: new Date('2023-09-29T12:34:56'),
-      amount: 50,
-      budgetArea: 'food',
-      type: 'withdraw'
-    },
-    {
-      id: '1',
-      date: new Date('2023-09-30T11:34:56'),
-      amount: 44.9,
-      budgetArea: 'wifi',
-      type: 'withdraw'
-    },
-    {
-      id: '2',
-      date: new Date('2023-10-01T10:34:56'),
-      amount: 77.49,
-      budgetArea: 'gas',
-      type: 'withdraw',
-      notes: '10 gal @ $3.00/gal'
-    },
-    {
-      id: '3',
-      date: new Date('2023-10-02T09:34:56'),
-      amount: 50,
-      budgetArea: 'food',
-      type: 'withdraw',
-      notes: 'Breakfast @ dunkin'
-    },
-    {
-      id: '4',
-      date: new Date('2023-10-03T08:34:56'),
-      amount: 50,
-      budgetArea: 'groceries',
-      type: 'withdraw'
-    },
-    {
-      id: '5',
-      date: new Date('2023-10-04T08:34:56'),
-      amount: 50,
-      budgetArea: 'groceries',
-      type: 'withdraw'
-    },
-    {
-      id: '6',
-      date: new Date('2023-10-05T08:34:56'),
-      amount: 50,
-      budgetArea: 'groceries',
-      type: 'withdraw'
-    },
-    {
-      id: '7',
-      date: new Date('2023-10-06T08:34:56'),
-      amount: 50,
-      budgetArea: 'groceries',
-      type: 'withdraw'
-    },
-    {
-      id: '8',
-      date: new Date('2023-10-07T08:34:56'),
-      amount: 50,
-      budgetArea: 'groceries',
-      type: 'withdraw',
-      notes: 'last'
-    },
-    {
-      id: '9',
-      date: new Date('2023-10-08T08:34:56'),
-      amount: 50,
-      budgetArea: 'groceries',
-      type: 'withdraw',
-      notes: 'last'
-    },
-  ],
-  name: 'Test account 1'
-}
 
-export default function SpendingCard({ accountName } : { accountName?: string }) {
-  const accountsData = useAppSelector(state => state.spending);
-  const account = accountsData.filter(acc => acc.name === accountName).at(0);
-
+export default function SpendingCard() {
+  const selectedAccount = useAppSelector(state => state.selectedAccount);
   const [addTransactionOpen, setAddTransactionOpen] = useState(false);
 
-  const transactions = account === undefined ? [] : account.transactions;
+  if(selectedAccount.name === '') {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <Loader2 className="animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
+  const { transactions } = selectedAccount
 
   const pastFiveTransactions = getNPreviousTransactions(transactions);
 

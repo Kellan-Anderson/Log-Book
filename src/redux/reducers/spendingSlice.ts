@@ -13,14 +13,12 @@ const SpendingSlice = createSlice({
     addAccount: (state, action: PayloadAction<string>) => {
       const name = action.payload;
       const nameIndex = state.findIndex(acc => acc.name === name);
-      console.log('Adding: ', name, 'index:', nameIndex);
       if(nameIndex === -1) {
         const newAccount: account = {
           name,
           budgets: [],
           transactions: []
         }
-        console.log('returning: ', [...state, newAccount]);
         return [...state, newAccount]
       }
       return [...state]

@@ -28,8 +28,7 @@ const selectedAccountSlice = createSlice({
         date: dateString,
         id: id ?? generateId({prefix: 'tr-'})
       }
-      console.log('adding transaction:', newTransaction)
-
+      
       return {
         ...state,
         transactions: [...state.transactions, newTransaction]
