@@ -30,7 +30,7 @@ export function getLastNDays(transactions: transaction[], numDays: number = 5) {
   const earlier = new Date();
   earlier.setDate(now.getDate() - numDays);
 
-  return transactions.filter(t => t.date > earlier );
+  return transactions.filter(t => new Date(t.date) > earlier );
 }
 
 export function generateId(

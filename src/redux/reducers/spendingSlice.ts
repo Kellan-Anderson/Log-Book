@@ -10,11 +10,18 @@ const SpendingSlice = createSlice({
   reducers: {
     setInitialAccounts: (_state, action: PayloadAction<account[]>) => action.payload,
 
-    addAccount: (state, action: PayloadAction<account>) => {
-      const { name } = action.payload;
+    addAccount: (state, action: PayloadAction<string>) => {
+      const name = action.payload;
       const nameIndex = state.findIndex(acc => acc.name === name);
-      if(nameIndex !== -1) {
-        return [...state, action.payload]
+      console.log('Adding: ', name, 'index:', nameIndex);
+      if(nameIndex === -1) {
+        const newAccount: account = {
+          name,
+          budgets: [],
+          transactions: []
+        }
+        console.log('returning: ', [...state, newAccount]);
+        return [...state, newAccount]
       }
       return [...state]
     },

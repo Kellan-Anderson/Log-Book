@@ -2,7 +2,7 @@ import z from 'zod';
 
 export const transactionSchema = z.object({
   id: z.string(),
-  date: z.date(),
+  date: z.string(),
   amount: z.number(),
   type: z.enum(['withdraw', 'deposit']),
   budgetArea: z.string(),
@@ -16,7 +16,7 @@ export type PartialTransaction = {
   budgetArea: string,
   id?: string,
   notes?: string,
-  date?: Date
+  date?: string
 }
 
 export const budgetSchema = z.object({

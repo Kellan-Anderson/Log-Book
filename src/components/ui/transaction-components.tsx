@@ -72,10 +72,11 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
       amount: values.amount,
       budgetArea: budgetArea.current,
       type: transactionType.current,
-      date: new Date(),
+      date: new Date().toString(),
       notes: values.notes
     }
     dispatch(addTransaction(transaction));
+    onOpenChange(false);
   }
   const onFormSubmitError: SubmitErrorHandler<TransactionFormType> = (values) => {
     setErrorMessage(values.amount?.message);

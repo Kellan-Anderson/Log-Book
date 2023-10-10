@@ -17,15 +17,18 @@ const selectedAccountSlice = createSlice({
 
     addTransaction: (state, action: PayloadAction<PartialTransaction>) => {
       const { amount, budgetArea, type, date, id, notes } = action.payload;
-
+      
+      const dateString = date?.toString() ?? new Date().toString();
+      
       const newTransaction: transaction = {
         amount,
         budgetArea,
         type,
         notes,
-        date: date ?? new Date(),
+        date: dateString,
         id: id ?? generateId({prefix: 'tr-'})
       }
+      console.log('adding transaction:', newTransaction)
 
       return {
         ...state,
