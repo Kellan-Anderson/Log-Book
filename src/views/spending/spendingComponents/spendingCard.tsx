@@ -6,7 +6,7 @@ import { transaction } from "@/types";
 import { AddTransaction, TransactionCard } from "@/components/ui/transaction-components";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getLastNDays, getNPreviousTransactions, getTotalDeposit, getTotalWithdraw } from "@/lib/helpers";
+import { getLastNDays, getNPreviousTransactions, getTotals } from "@/lib/helpers";
 import dayjs from "dayjs";
 import { Loader2, Plus } from "lucide-react";
 import { useAppSelector } from "@/redux/redux-hooks";
@@ -50,8 +50,8 @@ export default function SpendingCard() {
               {pastFiveTransactions.map(t => <TransactionCard transaction={t} key={t.id} />)}
             </Card>
             <div className="grow w-full grid grid-cols-2 gap-1 pb-14 lg:pb-0">
-              <TotalsCard amount={getTotalWithdraw(transactions)} creditOrDebit="debit" />
-              <TotalsCard amount={getTotalDeposit(transactions)} creditOrDebit="credit" />
+              <TotalsCard amount={getTotals(transactions, 'withdraw')} creditOrDebit="debit" />
+              <TotalsCard amount={getTotals(transactions, 'deposit')} creditOrDebit="credit" />
             </div>
             <Button className="hidden lg:block" onClick={onAddTransactionClick}>
               Add a transaction
@@ -67,7 +67,7 @@ export default function SpendingCard() {
 
 function Graph({ data } : { data: transaction[] }) {
 
-  const graphData = getLastNDays(data).map(d => ({...d, name: dayjs(d.date).format('dd/mm')}))
+  const graphData = getLastNDays(data)
 
   const CustomTooltip = ({ payload, active }: TooltipProps<ValueType, NameType>) => {
     if (active) {
@@ -89,7 +89,6 @@ function Graph({ data } : { data: transaction[] }) {
     <ResponsiveContainer>
       <LineChart data={graphData}>
         <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-        <XAxis />
         <Tooltip content={<CustomTooltip />}/>
       </LineChart>
     </ResponsiveContainer>

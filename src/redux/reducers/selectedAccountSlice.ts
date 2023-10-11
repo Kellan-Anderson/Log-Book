@@ -18,6 +18,7 @@ const selectedAccountSlice = createSlice({
     addTransaction: (state, action: PayloadAction<PartialTransaction>) => {
       const { amount, budgetArea, type, date, id, notes } = action.payload;
       
+      // const amount = parseInt(action.payload.amount);
       const dateString = date?.toString() ?? new Date().toString();
       
       const newTransaction: transaction = {

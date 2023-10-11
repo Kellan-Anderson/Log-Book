@@ -5,24 +5,12 @@ export function getNPreviousTransactions(transactions: transaction[], numTransac
   return transactions.slice(length - numTransactions, length);
 }
 
-export function getTotalDeposit(transactions: transaction[]) {
-  let sum = 0;
-  transactions.forEach(t => {
-    if(t.type === 'deposit') {
-      sum += t.amount
-    }
-  });
-  return sum;
-}
-
-export function getTotalWithdraw(transactions: transaction[]) {
-  let sum = 0;
-  transactions.forEach(t => {
-    if(t.type === 'withdraw') {
-      sum += t.amount
-    }
-  });
-  return sum;
+export function getTotals(transactions: transaction[], type: 'withdraw' | 'deposit') {
+  const amounts = transactions.filter(t => t.type === type).map(t => t.amount);
+  console.log(amounts)
+  const total = amounts.reduce((total, value) => total + value);
+  console.log(`Total sum for ${type}: ${total}`)
+  return total;
 }
 
 export function getLastNDays(transactions: transaction[], numDays: number = 5) {

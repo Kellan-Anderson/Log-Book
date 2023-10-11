@@ -62,20 +62,21 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   type TransactionFormType = {
-    amount: number,
+    amount: string,
     notes: string
   }
-  const { register, handleSubmit} = useForm<TransactionFormType>();
+  const { register, handleSubmit, reset } = useForm<TransactionFormType>();
 
   const onFormSubmit: SubmitHandler<TransactionFormType> = (values) => {
     const transaction: PartialTransaction = {
-      amount: values.amount,
+      amount: parseInt(values.amount),
       budgetArea: budgetArea.current,
       type: transactionType.current,
       date: new Date().toString(),
       notes: values.notes
     }
     dispatch(addTransaction(transaction));
+    reset();
     onOpenChange(false);
   }
   const onFormSubmitError: SubmitErrorHandler<TransactionFormType> = (values) => {
