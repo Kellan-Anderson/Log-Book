@@ -41,7 +41,7 @@ export default function SpendingCard() {
           <Card className="col-span-3 px-3 flex flex-col h-1/3 lg:h-full">
             <CardTitle className="pt-3">Previous Five days</CardTitle>
             <div className="grow">
-              <Graph data={pastFiveTransactions} />
+              <Graph data={transactions} />
             </div>
           </Card>
           <div className="col-span-2 flex flex-col justify-between gap-2 lg:h-full pt-2 lg:pt-0">
