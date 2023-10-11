@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "./button";
 import { useAppDispatch } from "@/redux/redux-hooks";
 import { addAccount } from "@/redux/reducers/spendingSlice";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 
 export function AddAccountDialog({ isOpen, onOpenChange } : { isOpen: boolean, onOpenChange: (arg0: boolean) => void}) {
 
@@ -43,5 +44,49 @@ export function AddAccountDialog({ isOpen, onOpenChange } : { isOpen: boolean, o
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+export function MakeAccountCard() {
+  const dispatch = useAppDispatch();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+
+  type addAccountFormType = {
+    accountName: string
+  }
+  const { register, handleSubmit } = useForm<addAccountFormType>();
+  const onFormSubmit: SubmitHandler<addAccountFormType> = (values) => {
+    dispatch(addAccount(values.accountName))
+  }
+  const onFormSubmitError: SubmitErrorHandler<addAccountFormType> = (values) => {
+    setErrorMessage(values.accountName?.message);
+  }
+
+  return (
+    <div className="h-full w-full flex justify-center items-center">
+      <Card className="w-full md:w-1/2 lg:w-1/3">
+        <CardHeader>
+          <CardTitle>Please make an account</CardTitle>
+          <CardDescription>
+            It does not appear that you have an account in your browsers localStorage. Please make an account to 
+            continue
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="flex flex-col gap-2" onSubmit={handleSubmit(onFormSubmit, onFormSubmitError)}>
+            <Label htmlFor="accountNameInput">Account Name</Label>
+            <Input
+              placeholder="Name:"
+              id="accountNameInput"
+              {...register('accountName', {
+                required: 'Please enter an account name'
+              })}
+            />
+            {errorMessage && <p className="text-red-500 font-semibold text-sm">{errorMessage}</p>}
+            <Button className="w-full" type="submit">Add account</Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

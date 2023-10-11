@@ -7,7 +7,7 @@ export function getNPreviousTransactions(transactions: transaction[], numTransac
 
 export function getTotals(transactions: transaction[], type: 'withdraw' | 'deposit') {
   const amounts = transactions.filter(t => t.type === type).map(t => t.amount);
-  const total = amounts.reduce((total, value) => total + value);
+  const total = amounts.reduce((total, value) => total + value, 0);
   return total;
 }
 

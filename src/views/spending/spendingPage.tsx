@@ -2,11 +2,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SpendingCard from "./spendingComponents/spendingCard";
 import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { changeAccount, setInitialAccounts } from "@/redux/reducers/spendingSlice";
 import { accountSchema } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
-import { AddAccountDialog } from "@/components/ui/account-components";
+import { AddAccountDialog, MakeAccountCard } from "@/components/ui/account-components";
 import { setSelectedAccount } from "@/redux/reducers/selectedAccountSlice";
 
 export default function SpendingPage() {
@@ -17,8 +17,12 @@ export default function SpendingPage() {
 
   const { toast } = useToast();
 
+  const componentHasMounted = useRef(false);
+
   // Loads data from local storage when the component mounts
   useEffect(() => {
+    componentHasMounted.current = true;
+
     const localStorageData = localStorage.getItem('spending');
     try {
       if(localStorageData) {
@@ -46,7 +50,10 @@ export default function SpendingPage() {
   // Writes data to local storage when the redux store changes
   useEffect(() => {
     if(accountsData.length !== 0) {
-      localStorage.setItem('spending', JSON.stringify(accountsData))
+      localStorage.setItem('spending', JSON.stringify(accountsData));
+      if(selectedAccount.name === '') {
+        dispatch(setSelectedAccount(accountsData[0]))
+      }
     }
   }, [accountsData]);
 
@@ -57,6 +64,7 @@ export default function SpendingPage() {
     }
   }, [selectedAccount, dispatch]);
 
+  // Controls add account dialog
   const [addAccountDialogOpen, setAddAccountDialogOpen] = useState(false);
 
   const onSelectAccountChange = (selectedAccountName: string) => {
@@ -66,8 +74,11 @@ export default function SpendingPage() {
     }
   }
 
-  const defaultAccount = accountsData.at(0)?.name
-  console.log(defaultAccount)
+  if(accountsData.length === 0 && componentHasMounted) {
+    return (
+      <MakeAccountCard />
+    );
+  }
 
   return (
     <>
@@ -79,7 +90,7 @@ export default function SpendingPage() {
               <TabsTrigger value="budget">Budget</TabsTrigger>
               <TabsTrigger value="history">History</TabsTrigger>
             </TabsList>
-            <Select onValueChange={onSelectAccountChange} defaultValue={defaultAccount}>
+            <Select onValueChange={onSelectAccountChange} defaultValue={accountsData.at(0)?.name}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose an account" />
               </SelectTrigger>

@@ -1,4 +1,4 @@
-import { Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, } from "recharts";
+import { Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, } from "recharts";
 import { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
 
 
