@@ -1,13 +1,23 @@
+// Shadcn ui components
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SpendingCard from "./spendingComponents/spendingCard";
-import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
-import { useEffect, useRef, useState } from "react";
-import { changeAccount, setInitialAccounts } from "@/redux/reducers/spendingSlice";
-import { accountSchema } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { AddAccountDialog, MakeAccountCard } from "@/components/ui/account-components";
+
+// React
+import { useEffect, useRef, useState } from "react";
+
+// Redux
+import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
+import { changeAccount, setInitialAccounts } from "@/redux/reducers/spendingSlice";
 import { setSelectedAccount } from "@/redux/reducers/selectedAccountSlice";
+
+// App Displays
+import SpendingCard from "./spendingComponents/spendingCard";
+import BudgetArea from "./spendingComponents/budgetArea";
+
+// Types
+import { accountSchema } from "@/types";
 
 export default function SpendingPage() {
 
@@ -55,7 +65,7 @@ export default function SpendingPage() {
         dispatch(setSelectedAccount(accountsData[0]))
       }
     }
-  }, [accountsData]);
+  }, [accountsData, dispatch]);
 
   // Updates the Spending slice when the selected account slice changes
   useEffect(() => {
@@ -110,7 +120,7 @@ export default function SpendingPage() {
             <SpendingCard />
           </TabsContent>
           <TabsContent value="budget" className="grow">
-            budget
+            <BudgetArea />
           </TabsContent>
           <TabsContent value="history" className="grow">
             history

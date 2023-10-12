@@ -23,7 +23,8 @@ export const budgetSchema = z.object({
   name: z.string(),
   alloted: z.coerce.number().optional(),
   spent: z.coerce.number(),
-  description: z.string().optional()
+  description: z.string().optional(),
+  icon: z.string().emoji().optional()
 });
 export type budget = z.infer<typeof budgetSchema>;
 
