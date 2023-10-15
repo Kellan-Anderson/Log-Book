@@ -30,3 +30,43 @@ export function generateId(
   }
   return prefix + id;
 }
+export const twColors = [
+  'slate',
+  'zinc',
+  'stone',
+  'red',
+  'orange',
+  'amber',
+  'yellow',
+  'lime',
+  'green',
+  'emerald',
+  'teal',
+  'cyan',
+  'sky',
+  'blue',
+  'indigo',
+  'violet',
+  'purple',
+  'fuchsia',
+  'pink',
+  'rose'
+];
+
+export const twIntensities = [
+  '400',
+  '500',
+  '600',
+  '700',
+  '800',
+  '900'
+]
+
+
+export function getRandomTailwindColor() {
+
+  const randColor = Math.floor(Math.random() * twColors.length);
+  const randIntensity = Math.floor(Math.random() * twIntensities.length);
+
+  return `${twColors[randColor]}-${twIntensities[randIntensity]}`
+}

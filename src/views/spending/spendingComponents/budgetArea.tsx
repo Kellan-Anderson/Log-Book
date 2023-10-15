@@ -1,35 +1,36 @@
 import { BudgetCard } from "@/components/ui/budget-components";
+import { Card } from "@/components/ui/card";
+import { useAppSelector } from "@/redux/redux-hooks";
+import { testData } from "@/testData";
 import { budget } from "@/types";
-
-const fakeData: budget[] = [
-  {
-    name: 'budget 1',
-    spent: 0,
-  },
-  {
-    name: 'budget 2',
-    spent: 30,
-    alloted: 45
-  },
-  {
-    name: 'budget 3',
-    spent: 60,
-    description: 'Hello world'
-  },
-  {
-    name: 'budget 4',
-    spent: 80,
-    alloted: 100,
-    description: 'Sup',
-    icon: '🎉'
-  }
-]
 
 export default function BudgetArea() {
 
+  const { budgets } = useAppSelector(state => state.selectedAccount);
+
+  /*
+    Items to display in budget area:
+      - List of all budgets. Each Item should display:
+        -> Amount spent in that budget
+        -> Amount remaining in that budget (if applicable)
+        -> Budget icon
+        -> Budget color
+        -> Budget Details Dropdown
+      - Pie graph showing breakdown of budgets
+      - Pie graph showing breakdown of amount spent in budgets
+      - Details for all budgets
+
+  */
+
   return (
     <>
-      {fakeData.map(b => <BudgetCard budgetItem={b} key={b.name} />)}
+      <Card className="w-2/3 h-full p-2">
+        {testData.budgets.map(b => <BudgetCard budgetItem={b} key={b.name} />)}
+      </Card>
+      <div className="absolute right-0 top-0 w-1/3 h-screen flex flex-col pr-4">
+        <div className="sticky grow border border-red-500"></div>
+        <div className="sticky grow border border-red-500"></div>
+      </div>
     </>
   );
 }

@@ -18,6 +18,7 @@ import BudgetArea from "./spendingComponents/budgetArea";
 
 // Types
 import { accountSchema } from "@/types";
+import { testData } from "@/testData";
 
 export default function SpendingPage() {
 
@@ -30,6 +31,8 @@ export default function SpendingPage() {
   const componentHasMounted = useRef(false);
 
   // Loads data from local storage when the component mounts
+  // TODO uncomment after testing
+  /*
   useEffect(() => {
     componentHasMounted.current = true;
 
@@ -56,7 +59,7 @@ export default function SpendingPage() {
       console.error(e);
     }
   }, [dispatch, toast]);
-
+  
   // Writes data to local storage when the redux store changes
   useEffect(() => {
     if(accountsData.length !== 0) {
@@ -66,6 +69,12 @@ export default function SpendingPage() {
       }
     }
   }, [accountsData, dispatch]);
+  */
+
+  useEffect(() => {
+    dispatch(setInitialAccounts([testData]))
+    dispatch(setSelectedAccount(testData))
+  }, [])
 
   // Updates the Spending slice when the selected account slice changes
   useEffect(() => {

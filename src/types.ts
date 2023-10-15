@@ -22,8 +22,8 @@ export type transaction = z.infer<typeof transactionSchema>
 export const budgetSchema = z.object({
   name: z.string(),
   alloted: z.coerce.number().optional(),
-  spent: z.coerce.number(),
   description: z.string().optional(),
+  color: z.string(),
   icon: z.string().emoji().optional()
 });
 export type budget = z.infer<typeof budgetSchema>;
@@ -34,6 +34,27 @@ export const accountSchema = z.object({
   budgets: budgetSchema.array()
 })
 export type account = z.infer<typeof accountSchema>
+
+export type months = 'Jan' | 'Feb' | 'Mar' | 'Apr' | 'May' | 'Jun' | 'Jul' | 'Aug' | 'Sep' | 'Oct' | 'Nov' | 'Dec'
+
+export type ReportType = {
+  spent: number,
+  budgeted: number | undefined,
+  difference: number | undefined
+}
+
+export type BudgetReport = {
+  monthReport: ReportType,
+  yearToDate: ReportType,
+  annualReport: {
+      annualBudget: number | undefined;
+      remaining: number | undefined;
+  },
+  other: {
+      averageSpentPerMonth: number;
+  },
+}
+
 
 export const timePunchSchema = z.object({
   timeIn: z.date(),
