@@ -1,7 +1,16 @@
-import { BudgetReport, ReportType, budget } from "@/types";
+import { BudgetReport, budget } from "@/types";
 import { DollarSign } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./accordion";
 import { useBudget } from "@/hooks/budgetHooks";
+import { Dialog, DialogContent, DialogTitle } from "./dialog";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { Label } from "./label";
+import { Input } from "./input";
+import { Button } from "./button";
+import { Textarea } from "./textarea";
+import { z } from "zod";
+import { useState } from "react";
+import { ColorPicker } from "./colorPicker";
 
 export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
   const { getThisMonthsSpending, report } = useBudget(budgetItem.name);
@@ -110,5 +119,66 @@ function ProgressBar({ percentage } : { percentage : number}) {
     <div className="h-[4px] w-full bg-white rounded-lg overflow-hidden">
       <div className="h-full bg-red-500 rounded-lg" style={{ width: `${percentage * 100}%`}}></div>
     </div>
+  );
+}
+
+
+export function AddBudgetDialog({ isOpen, onOpenChange } : {
+  isOpen: boolean,
+  onOpenChange: (arg0: boolean) => void
+}) {
+
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+
+  const { register, handleSubmit } = useForm<budget>();
+  const onFormSubmit: SubmitHandler<budget> = (values) => {
+    console.log(values);
+  }
+  const onFormSubmitError: SubmitErrorHandler<budget> = (values) => {
+    console.log(values)
+  }
+  const iconValidation = (val: string | undefined) => {
+    const checker = z.string().length(1).emoji();
+    const { success } = checker.safeParse(val);
+    if(!success) {
+      setErrorMessage('Icon can only be one emoji');
+      return success;
+    }
+    return success;
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogTitle>Add a budget:</DialogTitle>
+        <form onSubmit={handleSubmit(onFormSubmit, onFormSubmitError)} className="flex flex-col gap-2">
+          <Label>Budget Name:</Label>
+          <Input
+            placeholder="Name"
+            {...register('name', {
+              required: 'Please enter a name'
+            })}
+          />
+
+          <Label>Budget Amount (Optional)</Label>
+          <Input type="number" {...register('alloted')} />
+
+          <Label>Icon Emoji</Label>
+          <Input
+            {...register('icon', {
+              validate: (val) => iconValidation(val),
+            })}
+          />
+
+          <Label>Color</Label>
+          <ColorPicker />
+
+          <Label>Description (Optional)</Label>
+          <Textarea {...register('description')} />
+
+          <Button type="submit" className="w-full">Add</Button>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
