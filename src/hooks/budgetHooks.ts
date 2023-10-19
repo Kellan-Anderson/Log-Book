@@ -3,15 +3,15 @@ import { useTransactions } from "./transactionHooks";
 import { months, ReportType } from "@/types"
 
 export function useBudget(budgetName: string) {
-  const selectedAccount = useAppSelector(state => state.selectedAccount);
+  const { budgets, transactions } = useAppSelector(state => state.selectedAccount);
   const { getThisMonthsTransactions, getThisYearsTransactions, getTransactionsByMonth } = useTransactions()
 
-  const budget = selectedAccount.budgets.find(b => b.name === budgetName);
+  const budget = budgets.find(b => b.name === budgetName);
   if(!budget) {
     throw new Error('Invalid budget name')
   }
 
-  const budgetTransactions = selectedAccount.transactions.filter(t => t.budgetArea === budgetName);
+  const budgetTransactions = transactions.filter(t => t.budgetArea === budgetName);
   const now = new Date();
 
   const getThisMonthsSpending = () => {

@@ -31,8 +31,6 @@ export default function SpendingPage() {
   const componentHasMounted = useRef(false);
 
   // Loads data from local storage when the component mounts
-  // TODO uncomment after testing
-  /*
   useEffect(() => {
     componentHasMounted.current = true;
 
@@ -69,12 +67,11 @@ export default function SpendingPage() {
       }
     }
   }, [accountsData, dispatch]);
-  */
 
-  useEffect(() => {
-    dispatch(setInitialAccounts([testData]))
-    dispatch(setSelectedAccount(testData))
-  }, [])
+  // useEffect(() => {
+  //   dispatch(setInitialAccounts([testData]))
+  //   dispatch(setSelectedAccount(testData))
+  // }, [])
 
   // Updates the Spending slice when the selected account slice changes
   useEffect(() => {
@@ -94,6 +91,7 @@ export default function SpendingPage() {
   }
 
   if(accountsData.length === 0 && componentHasMounted) {
+    console.log(accountsData)
     return (
       <MakeAccountCard />
     );

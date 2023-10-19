@@ -9,8 +9,10 @@ import { Input } from "./input";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
 import { z } from "zod";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ColorPicker } from "./colorPicker";
+import { useAppDispatch } from "@/redux/redux-hooks";
+import { addBudget } from "@/redux/reducers/selectedAccountSlice";
 
 export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
   const { getThisMonthsSpending, report } = useBudget(budgetItem.name);
@@ -37,7 +39,7 @@ export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="notes" className="border-none w-full">
               <div className="flex flex-row justify-end w-full">
-                {alloted && (
+                {(alloted !== 0 && alloted !== undefined) && (
                   <div className="flex justify-center items-center w-full pr-4">
                     <ProgressBar percentage={spent/alloted} />
                   </div>
@@ -128,23 +130,33 @@ export function AddBudgetDialog({ isOpen, onOpenChange } : {
   onOpenChange: (arg0: boolean) => void
 }) {
 
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const dispatch = useAppDispatch();
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+  const budgetColor = useRef<string>('');
 
   const { register, handleSubmit } = useForm<budget>();
   const onFormSubmit: SubmitHandler<budget> = (values) => {
-    console.log(values);
+    setErrorMessages([])
+    dispatch(addBudget({
+      ...values,
+      color: budgetColor.current
+    }));
+    onOpenChange(false)
   }
+
   const onFormSubmitError: SubmitErrorHandler<budget> = (values) => {
-    console.log(values)
+    const messages: string[] = [];
+    Object.entries(values).forEach(([_, val]) => {
+      if(val.message) messages.push(val.message)
+    });
+    setErrorMessages(messages);
   }
+
   const iconValidation = (val: string | undefined) => {
-    const checker = z.string().length(1).emoji();
-    const { success } = checker.safeParse(val);
-    if(!success) {
-      setErrorMessage('Icon can only be one emoji');
-      return success;
-    }
-    return success;
+    if(val === undefined || val === '') return true;
+    const { success } = z.string().length(1).emoji().safeParse(val);
+    return success || 'Please enter a single emoji'
   }
 
   return (
@@ -166,17 +178,19 @@ export function AddBudgetDialog({ isOpen, onOpenChange } : {
           <Label>Icon Emoji</Label>
           <Input
             {...register('icon', {
-              validate: (val) => iconValidation(val),
+              required: false,
+              validate: (val) => iconValidation(val)
             })}
           />
 
           <Label>Color</Label>
-          <ColorPicker />
+          <ColorPicker onColorChange={(color) => budgetColor.current = color} />
 
           <Label>Description (Optional)</Label>
           <Textarea {...register('description')} />
 
           <Button type="submit" className="w-full">Add</Button>
+          {errorMessages.map(err => <p className="text-red-500 text-sm font-semibold" key={err}>{err}</p>)}
         </form>
       </DialogContent>
     </Dialog>

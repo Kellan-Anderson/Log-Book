@@ -1,5 +1,5 @@
 import { generateId } from "@/lib/helpers";
-import { account, transaction } from "@/types";
+import { account, budget, transaction } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { PartialTransaction } from "@/types"
 
@@ -34,10 +34,24 @@ const selectedAccountSlice = createSlice({
         ...state,
         transactions: [...state.transactions, newTransaction]
       }
+    },
+
+    addBudget: (state, action: PayloadAction<budget>) => {
+      const budgetExists = state.budgets.findIndex(b => b.name === action.payload.name);
+      if(budgetExists === -1) {
+        return {
+          ...state,
+          budgets: [
+            ...state.budgets,
+            action.payload
+          ]
+        }
+      }
+      return {...state}
     }
   },
 
 });
 
-export const { addTransaction, setSelectedAccount } = selectedAccountSlice.actions;
+export const { addTransaction, setSelectedAccount, addBudget } = selectedAccountSlice.actions;
 export default selectedAccountSlice.reducer;

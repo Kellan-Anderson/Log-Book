@@ -7,7 +7,6 @@ import { Button } from "./button";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 
 export function ColorPicker(props : {
-  defaultBackgroundColor?: string,
   onColorChange?: (arg0: string) => void,
 }) {
 
@@ -23,7 +22,7 @@ export function ColorPicker(props : {
     "#3D3058", "#DDBE93", "#576461",
   ]
 
-  const [selectedColor, setSelectedColor] = useState(defaultColors[Math.floor(Math.random() * defaultColors.length)]);
+  const [selectedColor, setSelectedColor] = useState('');
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
@@ -33,6 +32,7 @@ export function ColorPicker(props : {
   const { register, handleSubmit } = useForm<colorFormType>();
   const onFormSubmit: SubmitHandler<colorFormType> = (values) => {
     props.onColorChange?.(values.color);
+    setErrorMessage(undefined);
     setSelectedColor(values.color);
     setPopoverOpen(false);
   }
@@ -43,8 +43,8 @@ export function ColorPicker(props : {
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger 
-        style={{ background: selectedColor }}
         className="border-2 border-black dark:border-white rounded-lg py-1"
+        style={{ background: selectedColor }}
       >
         Choose a color
       </PopoverTrigger>

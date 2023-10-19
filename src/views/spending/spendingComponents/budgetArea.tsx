@@ -1,8 +1,7 @@
 import { AddBudgetDialog, BudgetCard } from "@/components/ui/budget-components";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useAppSelector } from "@/redux/redux-hooks";
-import { testData } from "@/testData";
 import { useState } from "react";
 
 export default function BudgetArea() {
@@ -18,7 +17,12 @@ export default function BudgetArea() {
           <h1 className="font-bold text-2xl">Budgets:</h1>
           <Button onClick={() => setAddBudgetDialogOpen(true)}>Add Budget Area</Button>
         </div>
-        {testData.budgets.map(b => <BudgetCard budgetItem={b} key={b.name} />)}
+        {budgets.length !== 0 && budgets.map(b => <BudgetCard budgetItem={b} key={b.name} />)}
+        {budgets.length === 0 && (
+          <CardContent className="w-full flex justify-center items-center">
+            <h1>No budgets! Add a budget to get started</h1>
+          </CardContent>
+        )}
       </Card>
       <div className="absolute right-0 top-0 w-1/3 h-screen flex flex-col pr-4">
         <div className="sticky grow border border-red-500"></div>
