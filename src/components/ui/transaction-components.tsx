@@ -53,7 +53,7 @@ export function TransactionCard({ transaction } : { transaction: transaction }) 
 }
 
 export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onOpenChange: (arg0: boolean) => void }) {
-  const transactionType = useRef<'withdraw' | 'deposit'>('withdraw');
+  const [transactionType, setTransactionType] = useState<'withdraw' | 'deposit'>('withdraw');
   const budgetArea = useRef<string>('miscellaneous')
 
   const account = useAppSelector(state => state.selectedAccount);
@@ -71,7 +71,7 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
     const transaction: PartialTransaction = {
       amount: parseInt(values.amount),
       budgetArea: budgetArea.current,
-      type: transactionType.current,
+      type: transactionType,
       date: new Date().toString(),
       notes: values.notes
     }
@@ -92,7 +92,7 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
         <form onSubmit={handleSubmit(onFormSubmit, onFormSubmitError)}>
           <Tabs
             defaultValue="withdraw"
-            onValueChange={(val) => transactionType.current = val === 'withdraw' ? val : 'deposit'}
+            onValueChange={(val) => setTransactionType(val === 'withdraw' ? val : 'deposit')}
           >
             <TabsList className="w-full grid grid-cols-2">
               <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
@@ -110,7 +110,7 @@ export function AddTransaction({ isOpen, onOpenChange } : { isOpen: boolean, onO
             />
           </div>
           <Label htmlFor="budgetSelector">Select a budget</Label>
-          <Select>
+          <Select onValueChange={(val) => budgetArea.current = val} disabled={transactionType === 'deposit'}>
             <SelectTrigger defaultValue="miscellaneous" id="budgetSelector">
               <SelectValue placeholder="Misc." />
             </SelectTrigger>

@@ -1,12 +1,14 @@
 import { useAppSelector } from "@/redux/redux-hooks"
 import { useTransactions } from "./transactionHooks";
-import { months, ReportType } from "@/types"
+import { budget, months, ReportType } from "@/types"
 
 export function useBudget(budgetName: string) {
   const { budgets, transactions } = useAppSelector(state => state.selectedAccount);
   const { getThisMonthsTransactions, getThisYearsTransactions, getTransactionsByMonth } = useTransactions()
 
-  const budget = budgets.find(b => b.name === budgetName);
+  const budget: budget | undefined = (budgetName === 'miscellaneous')
+    ? { color: '', name: 'miscellaneous' }
+    : budgets.find(b => b.name === budgetName);
   if(!budget) {
     throw new Error('Invalid budget name')
   }

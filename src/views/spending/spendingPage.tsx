@@ -18,7 +18,6 @@ import BudgetArea from "./spendingComponents/budgetArea";
 
 // Types
 import { accountSchema } from "@/types";
-import { testData } from "@/testData";
 
 export default function SpendingPage() {
 

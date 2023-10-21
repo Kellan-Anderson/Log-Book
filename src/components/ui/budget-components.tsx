@@ -25,13 +25,13 @@ export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
 
   return (
     <div className="flex flex-row border h-fit border-slate-600 rounded-lg mb-1.5 first:mt-1 last:mb-0 overflow-hidden">
-      <div className={`w-14 flex justify-center items-center ${color} rounded-r-lg mr-1`}>
+      <div className="w-14 flex justify-center items-center rounded-r-lg mr-1" style={{ background: color }}>
         {icon ? icon : <DollarSign /> }
       </div>
       <div className="flex flex-col w-full ">
         <div className="flex flex-row justify-between pr-3">
           <p className={`font-semibold text-right`}>{name}</p>
-          <p>
+          <p className="font-semibold">
             {formattedAlloted ? `${formattedSpent} of ${formattedAlloted}` : formattedSpent}
           </p>
         </div>
@@ -78,22 +78,34 @@ function BudgetDetails({ report } : { report: BudgetReport }) {
       <ReportTitle>Month Report:</ReportTitle>
       <div className="grid grid-flow-col pb-1.5">
         <ReportDetail name="Spent" value={monthSpent} />
-        {monthBudgeted && <ReportDetail name="Budgeted" value={monthBudgeted} />}
-        {monthDifference && <ReportDetail name="Difference" value={monthDifference} />}
+        {(monthBudgeted !== 0 && monthBudgeted !== undefined) && (
+          <ReportDetail name="Budgeted" value={monthBudgeted} />
+        )}
+        {(monthDifference !== 0 && monthDifference !== undefined) && (
+          <ReportDetail name="Difference" value={monthDifference} />
+        )}
       </div>
 
       <ReportTitle>Year to Date:</ReportTitle>
       <div className="grid grid-flow-col pb-1.5">
         <ReportDetail name="Spent" value={yearSpent} />
-        {yearBudgeted && <ReportDetail name="Budgeted" value={yearBudgeted} />}
-        {yearDifference && <ReportDetail name="Difference" value={yearDifference} />}
+        {(yearBudgeted !== 0 && yearBudgeted !== undefined) && (
+          <ReportDetail name="Budgeted" value={yearBudgeted} />
+        )}
+        {(yearDifference !== 0 && yearDifference !== undefined) && (
+          <ReportDetail name="Difference" value={yearDifference} />
+        )}
       </div>
 
       <ReportTitle>Annual:</ReportTitle>
       <div className="grid grid-flow-col pb-1.5">
         {(!annualBudget && !remaining) && <h2 className="font-semibold">No data</h2>}
-        {annualBudget && <ReportDetail name="Annual Budget" value={annualBudget} />}
-        {remaining && <ReportDetail name="Remaining" value={remaining} />}
+        {(annualBudget !== 0 && annualBudget !== undefined) && (
+          <ReportDetail name="Annual Budget" value={annualBudget} />
+        )}
+        {(remaining !== 0 && remaining !== undefined) && (
+          <ReportDetail name="Remaining" value={remaining} />
+        )}
       </div>
     </>
   );
@@ -118,7 +130,7 @@ function ReportDetail({ name, value } : { name: string, value: number }) {
 
 function ProgressBar({ percentage } : { percentage : number}) {
   return (
-    <div className="h-[4px] w-full bg-white rounded-lg overflow-hidden">
+    <div className="h-[4px] w-full bg-secondary rounded-lg overflow-hidden">
       <div className="h-full bg-red-500 rounded-lg" style={{ width: `${percentage * 100}%`}}></div>
     </div>
   );
@@ -155,7 +167,7 @@ export function AddBudgetDialog({ isOpen, onOpenChange } : {
 
   const iconValidation = (val: string | undefined) => {
     if(val === undefined || val === '') return true;
-    const { success } = z.string().length(1).emoji().safeParse(val);
+    const { success } = z.string().length(2).emoji().safeParse(val);
     return success || 'Please enter a single emoji'
   }
 

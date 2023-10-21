@@ -24,7 +24,7 @@ export const budgetSchema = z.object({
   alloted: z.coerce.number().optional(),
   description: z.string().optional(),
   color: z.string(),
-  icon: z.string().emoji().max(1).transform(e => e === '' ? undefined : e).optional()
+  icon: z.string().max(2).min(0).emoji().transform(e => e === '' ? undefined : e).optional()
 });
 export type budget = z.infer<typeof budgetSchema>;
 
