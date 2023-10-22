@@ -75,7 +75,7 @@ function Graph({ data } : { data: transaction[] }) {
       const transactionDate = dayjs(payload?.at(0)?.payload.date).format('MMMM DD')
 
       return (
-        <div className="bg-secondary p-2">
+        <div className="bg-secondary opacity-90 p-2">
           <p>Date: {transactionDate}</p>
           <p>{`Amount: $${payload?.at(0)?.value || 'Error'}`}</p>
         </div>

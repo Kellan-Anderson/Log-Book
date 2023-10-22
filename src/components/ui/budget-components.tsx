@@ -18,6 +18,8 @@ export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
   const { getThisMonthsSpending, report } = useBudget(budgetItem.name);
   const { name, alloted, icon, color, description } = budgetItem;
 
+  console.log(alloted);
+
   const spent = getThisMonthsSpending();
 
   const formattedAlloted = alloted && Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(alloted)
@@ -152,6 +154,7 @@ export function AddBudgetDialog({ isOpen, onOpenChange } : {
     setErrorMessages([])
     dispatch(addBudget({
       ...values,
+      alloted: (values.alloted && !isNaN(values.alloted)) ? values.alloted : undefined,
       color: budgetColor.current
     }));
     onOpenChange(false)
@@ -185,7 +188,7 @@ export function AddBudgetDialog({ isOpen, onOpenChange } : {
           />
 
           <Label>Budget Amount (Optional)</Label>
-          <Input type="number" {...register('alloted')} />
+          <Input type="number" {...register('alloted', { valueAsNumber: true })} />
 
           <Label>Icon Emoji</Label>
           <Input

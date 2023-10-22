@@ -6,8 +6,8 @@ export function useBudget(budgetName: string) {
   const { budgets, transactions } = useAppSelector(state => state.selectedAccount);
   const { getThisMonthsTransactions, getThisYearsTransactions, getTransactionsByMonth } = useTransactions()
 
-  const budget: budget | undefined = (budgetName === 'miscellaneous')
-    ? { color: '', name: 'miscellaneous' }
+  const budget: budget | undefined = (budgetName === 'Miscellaneous spending')
+    ? { color: '', name: 'Miscellaneous spending' }
     : budgets.find(b => b.name === budgetName);
   if(!budget) {
     throw new Error('Invalid budget name')
