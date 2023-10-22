@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Apple, CircleDollarSign, Clock, type LucideIcon } from "lucide-react"
+import { Apple, CircleDollarSign, Clock, Fish, Crosshair, type LucideIcon } from "lucide-react"
 import React, { ReactElement } from "react";
 
 export default function WelcomePage() {
@@ -17,11 +17,13 @@ export default function WelcomePage() {
               the local storage on your device. Check out some of the apps below!
             </CardDescription>
           </CardHeader>
-          <CardContent className="lg:block hidden lg:grow">
+          <CardContent className="lg:block hidden lg:grow pb-4">
             <div className="flex flex-wrap h-full">
               <SpendingCard />
               <TimeCard />
               <CalorieCard />
+              <HuntingCard />
+              <FishingCard />
             </div>
           </CardContent>
         </div>
@@ -30,6 +32,8 @@ export default function WelcomePage() {
         <SpendingCard />
         <TimeCard />
         <CalorieCard />
+        <HuntingCard />
+        <FishingCard />
       </div>
     </>
   );
@@ -75,6 +79,34 @@ function CalorieCard() {
         <li>Set goals for yourself and track how you're doing towards those goals</li>
         <li>View info on the foods you've eaten to help you see what benefits your goals the most</li>
         <li>Rate your best foods for top performance</li>
+      </ul>
+    </AppCard>
+  );
+}
+
+function HuntingCard() {
+  return (
+    <AppCard icon={<Crosshair />} name="Hunting">
+      Do you like to hunt? The hunting tracker app helps you to keep track of your previous hunts by keeping track of
+      important data pertaining to your recent hunts. By using the hunting tracker you can...
+      <ul className="list-disc list-inside py-1">
+        <li>See data about your recent hunts like weather, temperature, and time</li>
+        <li>Log different animal sightings to help reveal patterns</li>
+        <li>Compare data from different hunts</li>
+      </ul>
+    </AppCard>
+  );
+}
+
+function FishingCard() {
+  return (
+    <AppCard icon={<Fish />} name="Fishing">
+      Do you like to fish? The fishing tracker app helps you to keep track of fishing data to help have better insights
+      about your next trip. Using the fishing tracker you can... 
+      <ul className="list-disc list-inside py-1">
+        <li>Review data about your previous trips like weather, temperature, and location</li>
+        <li>Store your favorite fishing spots (stored locally, so no one can steal them 😉)</li>
+        <li>Log what fish you catch and track your personal bests</li>
       </ul>
     </AppCard>
   );
