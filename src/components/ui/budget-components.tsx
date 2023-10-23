@@ -1,5 +1,5 @@
 import { BudgetReport, budget } from "@/types";
-import { DollarSign } from "lucide-react";
+import { DollarSign, MoreVertical } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./accordion";
 import { useBudget } from "@/hooks/budgetHooks";
 import { Dialog, DialogContent, DialogTitle } from "./dialog";
@@ -12,13 +12,13 @@ import { z } from "zod";
 import { useRef, useState } from "react";
 import { ColorPicker } from "./colorPicker";
 import { useAppDispatch } from "@/redux/redux-hooks";
-import { addBudget } from "@/redux/reducers/selectedAccountSlice";
+import { editOrAddBudget } from "@/redux/reducers/selectedAccountSlice";
 
 export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
   const { getThisMonthsSpending, report } = useBudget(budgetItem.name);
   const { name, alloted, icon, color, description } = budgetItem;
 
-  console.log(alloted);
+  const [editBudgetDialogOpen, setEditBudgetDialogOpen] = useState(false);
 
   const spent = getThisMonthsSpending();
 
@@ -26,45 +26,54 @@ export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
   const formattedSpent = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(spent);
 
   return (
-    <div className="flex flex-row border h-fit border-slate-600 rounded-lg mb-1.5 first:mt-1 last:mb-0 overflow-hidden">
-      <div className="w-14 flex justify-center items-center rounded-r-lg mr-1" style={{ background: color }}>
-        {icon ? icon : <DollarSign /> }
-      </div>
-      <div className="flex flex-col w-full ">
-        <div className="flex flex-row justify-between pr-3">
-          <p className={`font-semibold text-right`}>{name}</p>
-          <p className="font-semibold">
-            {formattedAlloted ? `${formattedSpent} of ${formattedAlloted}` : formattedSpent}
-          </p>
+    <>
+      <div className="flex flex-row border h-fit border-slate-600 rounded-lg mb-1.5 first:mt-1 last:mb-0 overflow-hidden">
+        <div className="w-14 flex justify-center items-center rounded-r-lg mr-1" style={{ background: color }}>
+          {icon ? icon : <DollarSign /> }
         </div>
-        <div className="flex flex-row justify-between pr-3 pb-0.5">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="notes" className="border-none w-full">
-              <div className="flex flex-row justify-end w-full">
-                {(alloted !== 0 && alloted !== undefined) && (
-                  <div className="flex justify-center items-center w-full pr-4">
-                    <ProgressBar percentage={spent/alloted} />
-                  </div>
-                )}
-                <AccordionTrigger
-                  className="p-0 justify-end hover:no-underline whitespace-nowrap"
-                >
-                  Details
-                </AccordionTrigger>
-              </div>
-              <AccordionContent className="p-0">
-                <div className="flex flex-row gap-1 text-lg">
-                  <h1 className="font-bold">Budget Name:</h1>
-                  <p>{name}</p>
+        <div className="flex flex-col w-full ">
+          <div className="flex flex-row justify-between pr-3">
+            <p className={`font-semibold text-right`}>{name}</p>
+            <p className="font-semibold">
+              {formattedAlloted ? `${formattedSpent} of ${formattedAlloted}` : formattedSpent}
+            </p>
+          </div>
+          <div className="flex flex-row justify-between pr-3 pb-0.5">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="notes" className="border-none w-full">
+                <div className="flex flex-row justify-end w-full">
+                  {(alloted !== 0 && alloted !== undefined) && (
+                    <div className="flex justify-center items-center w-full pr-4">
+                      <ProgressBar percentage={spent/alloted} />
+                    </div>
+                  )}
+                  <AccordionTrigger
+                    className="p-0 justify-end hover:no-underline whitespace-nowrap"
+                  >
+                    Details
+                  </AccordionTrigger>
                 </div>
-                {description && <><h1>Description:</h1><p>{description}</p></>}
-                <BudgetDetails report={report} />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                <AccordionContent className="p-0">
+                  <div className="flex flex-row gap-1 text-lg">
+                    <h1 className="font-bold">Budget Name:</h1>
+                    <p>{name}</p>
+                  </div>
+                  {description && <><h1>Description:</h1><p>{description}</p></>}
+                  <BudgetDetails report={report} />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+        <div className="flex items-center justify-center pr-1">
+          <MoreVertical 
+            className="hover:cursor-pointer"
+            onClick={() => setEditBudgetDialogOpen(true)}
+          />
         </div>
       </div>
-    </div>
+      <AddBudgetDialog isOpen={editBudgetDialogOpen} onOpenChange={setEditBudgetDialogOpen} budget={budgetItem} />
+    </>
   );
 }
 
@@ -139,20 +148,22 @@ function ProgressBar({ percentage } : { percentage : number}) {
 }
 
 
-export function AddBudgetDialog({ isOpen, onOpenChange } : {
+export function AddBudgetDialog({ isOpen, onOpenChange, budget } : {
   isOpen: boolean,
-  onOpenChange: (arg0: boolean) => void
+  onOpenChange: (arg0: boolean) => void,
+  budget?: budget
 }) {
 
   const dispatch = useAppDispatch();
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-  const budgetColor = useRef<string>('');
+  const budgetColor = useRef<string>(budget?.color ?? '');
+  console.log('Recieved color: ', budgetColor.current);
 
-  const { register, handleSubmit } = useForm<budget>();
+  const { register, handleSubmit } = useForm<budget>({ defaultValues: budget });
   const onFormSubmit: SubmitHandler<budget> = (values) => {
     setErrorMessages([])
-    dispatch(addBudget({
+    dispatch(editOrAddBudget({
       ...values,
       alloted: (values.alloted && !isNaN(values.alloted)) ? values.alloted : undefined,
       color: budgetColor.current

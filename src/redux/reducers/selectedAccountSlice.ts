@@ -48,10 +48,35 @@ const selectedAccountSlice = createSlice({
         }
       }
       return {...state}
+    },
+    editOrAddBudget: (state, action: PayloadAction<budget>) => {
+      const { name } = action.payload;
+      const budgetExistsIndex = state.budgets.findIndex(b => b.name === name);
+      if(budgetExistsIndex === -1) {
+        return {
+          ...state,
+          budgets: [
+            ...state.budgets,
+            action.payload
+          ]
+        }
+      } else {
+        const newBudgets = state.budgets.map(b => {
+          if(b.name === name) {
+            return action.payload;
+          }
+          return b;
+        });
+
+        return {
+          ...state,
+          budgets: newBudgets
+        }
+      }
     }
   },
 
 });
 
-export const { addTransaction, setSelectedAccount, addBudget } = selectedAccountSlice.actions;
+export const { addTransaction, setSelectedAccount, addBudget, editOrAddBudget } = selectedAccountSlice.actions;
 export default selectedAccountSlice.reducer;
