@@ -7,7 +7,7 @@ export function useBudget(budgetName: string) {
   const { getThisMonthsTransactions, getThisYearsTransactions, getTransactionsByMonth } = useTransactions()
 
   const budget: budget | undefined = (budgetName === 'Miscellaneous spending')
-    ? { color: '', name: 'Miscellaneous spending' }
+    ? { color: '', name: 'Miscellaneous spending', id: '000000' }
     : budgets.find(b => b.name === budgetName);
   if(!budget) {
     throw new Error('Invalid budget name')

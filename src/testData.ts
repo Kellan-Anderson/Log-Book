@@ -4,6 +4,7 @@ const testData1: account = {
   name: 'test account 1',
   budgets: [
     {
+      id: 'b1',
       name: 'budget area 1',
       color: 'bg-red-500',
       // spent: 220
@@ -11,12 +12,14 @@ const testData1: account = {
       description: 'Whatever a good description would be for the first budget'
     },
     {
+      id: 'b2',
       name: 'budget area 2',
       color: 'bg-blue-500',
       // spent: 260
       alloted: 200,
     },
     {
+      id: 'b3',
       name: 'budget area 3',
       color: 'bg-green-500',
       // spent: 180
