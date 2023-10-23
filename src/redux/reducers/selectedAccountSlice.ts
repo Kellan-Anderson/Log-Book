@@ -37,7 +37,7 @@ const selectedAccountSlice = createSlice({
     },
 
     addBudget: (state, action: PayloadAction<budget>) => {
-      const budgetExists = state.budgets.findIndex(b => b.name === action.payload.name);
+      const budgetExists = state.budgets.findIndex(b => b.id === action.payload.id);
       if(budgetExists === -1) {
         return {
           ...state,
@@ -49,34 +49,27 @@ const selectedAccountSlice = createSlice({
       }
       return {...state}
     },
-    editOrAddBudget: (state, action: PayloadAction<budget>) => {
-      const { name } = action.payload;
-      const budgetExistsIndex = state.budgets.findIndex(b => b.name === name);
-      if(budgetExistsIndex === -1) {
-        return {
-          ...state,
-          budgets: [
-            ...state.budgets,
-            action.payload
-          ]
-        }
-      } else {
-        const newBudgets = state.budgets.map(b => {
-          if(b.name === name) {
-            return action.payload;
-          }
-          return b;
-        });
+    editBudget: (state, action: PayloadAction<budget>) => {
+      const { id } = action.payload;
+      const budgetExistsIndex = state.budgets.findIndex(b => b.id === id);
 
+      if(budgetExistsIndex !== -1) {
+        const newBudgets = state.budgets.map(b => {
+          if(b.id === id) {
+            return action.payload
+          }
+          return b
+        });
         return {
           ...state,
-          budgets: newBudgets
+          budgets: [...newBudgets]
         }
       }
+      return {...state}
     }
   },
 
 });
 
-export const { addTransaction, setSelectedAccount, addBudget, editOrAddBudget } = selectedAccountSlice.actions;
+export const { addTransaction, setSelectedAccount, addBudget, editBudget } = selectedAccountSlice.actions;
 export default selectedAccountSlice.reducer;

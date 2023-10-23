@@ -20,6 +20,7 @@ export const transactionSchema = z.object({
 export type transaction = z.infer<typeof transactionSchema>
 
 export const budgetSchema = z.object({
+  id: z.string(),
   name: z.string(),
   alloted: z.coerce.number().optional(),
   description: z.string().optional(),
@@ -54,7 +55,6 @@ export type BudgetReport = {
       averageSpentPerMonth: number;
   },
 }
-
 
 export const timePunchSchema = z.object({
   timeIn: z.date(),

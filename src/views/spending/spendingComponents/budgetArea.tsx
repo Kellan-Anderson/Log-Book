@@ -11,6 +11,7 @@ import { z } from "zod";
 const miscellaneousBudget: budget ={
   color: '',
   name: 'Miscellaneous spending',
+  id: '000000'
 }
 
 export default function BudgetArea() {

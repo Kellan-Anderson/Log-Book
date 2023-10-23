@@ -12,7 +12,8 @@ import { z } from "zod";
 import { useRef, useState } from "react";
 import { ColorPicker } from "./colorPicker";
 import { useAppDispatch } from "@/redux/redux-hooks";
-import { editOrAddBudget } from "@/redux/reducers/selectedAccountSlice";
+import { addBudget, editBudget } from "@/redux/reducers/selectedAccountSlice";
+import { generateId } from "@/lib/helpers";
 
 export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
   const { getThisMonthsSpending, report } = useBudget(budgetItem.name);
@@ -72,7 +73,12 @@ export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
           />
         </div>
       </div>
-      <AddBudgetDialog isOpen={editBudgetDialogOpen} onOpenChange={setEditBudgetDialogOpen} budget={budgetItem} />
+      <AddBudgetDialog 
+        editMode 
+        isOpen={editBudgetDialogOpen} 
+        onOpenChange={setEditBudgetDialogOpen} 
+        budget={budgetItem}  
+      />
     </>
   );
 }
@@ -148,26 +154,36 @@ function ProgressBar({ percentage } : { percentage : number}) {
 }
 
 
-export function AddBudgetDialog({ isOpen, onOpenChange, budget } : {
+export function AddBudgetDialog({ isOpen, onOpenChange, budget, editMode } : {
   isOpen: boolean,
   onOpenChange: (arg0: boolean) => void,
-  budget?: budget
+  budget?: budget,
+  editMode?: boolean
 }) {
 
   const dispatch = useAppDispatch();
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   const budgetColor = useRef<string>(budget?.color ?? '');
-  console.log('Recieved color: ', budgetColor.current);
 
   const { register, handleSubmit } = useForm<budget>({ defaultValues: budget });
   const onFormSubmit: SubmitHandler<budget> = (values) => {
     setErrorMessages([])
-    dispatch(editOrAddBudget({
+    const addedOrEditedBudget = {
       ...values,
       alloted: (values.alloted && !isNaN(values.alloted)) ? values.alloted : undefined,
       color: budgetColor.current
-    }));
+    }
+    if(editMode) {
+      console.log('editing')
+      dispatch(editBudget(addedOrEditedBudget));
+    } else {
+      console.log('adding')
+      dispatch(addBudget({
+        ...addedOrEditedBudget,
+        id: generateId({ prefix: 'b-' })
+      }))
+    }
     onOpenChange(false)
   }
 
@@ -181,7 +197,7 @@ export function AddBudgetDialog({ isOpen, onOpenChange, budget } : {
 
   const iconValidation = (val: string | undefined) => {
     if(val === undefined || val === '') return true;
-    const { success } = z.string().length(2).emoji().safeParse(val);
+    const { success } = z.string().emoji().min(0).max(2).safeParse(val);
     return success || 'Please enter a single emoji'
   }
 
@@ -215,7 +231,7 @@ export function AddBudgetDialog({ isOpen, onOpenChange, budget } : {
           <Label>Description (Optional)</Label>
           <Textarea {...register('description')} />
 
-          <Button type="submit" className="w-full">Add</Button>
+          <Button type="submit" className="w-full">{editMode ? "Submit" : "Add"}</Button>
           {errorMessages.map(err => <p className="text-red-500 text-sm font-semibold" key={err}>{err}</p>)}
         </form>
       </DialogContent>
