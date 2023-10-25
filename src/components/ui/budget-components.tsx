@@ -1,8 +1,8 @@
 import { BudgetReport, budget } from "@/types";
-import { DollarSign, MoreVertical } from "lucide-react";
+import { Ban, DollarSign, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./accordion";
 import { useBudget } from "@/hooks/budgetHooks";
-import { Dialog, DialogContent, DialogTitle } from "./dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from "./dialog";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { Label } from "./label";
 import { Input } from "./input";
@@ -12,14 +12,17 @@ import { z } from "zod";
 import { useRef, useState } from "react";
 import { ColorPicker } from "./colorPicker";
 import { useAppDispatch } from "@/redux/redux-hooks";
-import { addBudget, editBudget } from "@/redux/reducers/selectedAccountSlice";
+import { addBudget, deleteBudget, editBudget } from "@/redux/reducers/selectedAccountSlice";
 import { generateId } from "@/lib/helpers";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { useDispatch } from "react-redux";
 
 export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
   const { getThisMonthsSpending, report } = useBudget(budgetItem.name);
   const { name, alloted, icon, color, description } = budgetItem;
 
   const [editBudgetDialogOpen, setEditBudgetDialogOpen] = useState(false);
+  const [deleteBudgetDialogOpen, setDeleteBudgetDialogOpen] = useState(false);
 
   const spent = getThisMonthsSpending();
 
@@ -67,10 +70,30 @@ export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
           </div>
         </div>
         <div className="flex items-center justify-center pr-1">
-          <MoreVertical 
-            className="hover:cursor-pointer"
-            onClick={() => setEditBudgetDialogOpen(true)}
-          />
+          <Popover>
+            <PopoverTrigger>
+              <MoreVertical 
+                className="hover:cursor-pointer"
+              />
+            </PopoverTrigger>
+            <PopoverContent className="flex flex-col w-fit text-sm p-2">
+              <span
+                className="flex flex-row justify-between items-center gap-2 hover:bg-gray-400 hover:cursor-pointer p-1 rounded-sm"
+                onClick={() => setEditBudgetDialogOpen(true)}
+              >
+                <Pencil className="h-4 w-4"/>
+                Edit budget
+              </span>
+              <div className="h-px my-[2px] bg-gray-400"></div>
+              <span 
+                className="flex flex-row justify-between items-center gap-2 hover:bg-gray-400 hover:cursor-pointer p-1 rounded-sm text-red-500"
+                onClick={() => setDeleteBudgetDialogOpen(true)}
+              >
+                <Trash2 className="h-4 w-4 text-red-500"/>
+                Delete budget
+              </span>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <AddBudgetDialog 
@@ -79,6 +102,7 @@ export function BudgetCard({ budgetItem } : { budgetItem: budget }) {
         onOpenChange={setEditBudgetDialogOpen} 
         budget={budgetItem}  
       />
+      <DeleteBudgetDialog isOpen={deleteBudgetDialogOpen} onOpenChange={setDeleteBudgetDialogOpen} budget={budgetItem} />
     </>
   );
 }
@@ -234,6 +258,49 @@ export function AddBudgetDialog({ isOpen, onOpenChange, budget, editMode } : {
           <Button type="submit" className="w-full">{editMode ? "Submit" : "Add"}</Button>
           {errorMessages.map(err => <p className="text-red-500 text-sm font-semibold" key={err}>{err}</p>)}
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function DeleteBudgetDialog({ budget, isOpen, onOpenChange } : {
+  budget: budget,
+  isOpen: boolean,
+  onOpenChange: (arg0: boolean) => void
+}) {
+
+  const dispatch = useDispatch();
+
+  const onCancel = () => {
+    onOpenChange(false);
+  }
+
+  const onDelete = () => {
+    dispatch(deleteBudget(budget));
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange} >
+      <DialogContent>
+        <DialogTitle>{`Are you sure you want to delete ${budget.name}?`}</DialogTitle>
+        <DialogDescription>Once you delete the budget there is no way to recover it</DialogDescription>
+        <div className="flex flex-row w-full justify-center gap-5">
+          <Button
+            className="grow gap-2"
+            onClick={onCancel}
+          >
+            <Ban className="h-4 w-4" />
+            Cancel
+          </Button>
+          <Button 
+            variant="destructive"
+            className="grow gap-2"
+            onClick={onDelete}
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -66,10 +66,24 @@ const selectedAccountSlice = createSlice({
         }
       }
       return {...state}
+    },
+    deleteBudget: (state, action: PayloadAction<budget>) => {
+      const { id } = action.payload;
+      const newBudgets = state.budgets.filter(b => b.id !== id);
+      return {
+        ...state,
+        budgets: newBudgets
+      }
     }
   },
 
 });
 
-export const { addTransaction, setSelectedAccount, addBudget, editBudget } = selectedAccountSlice.actions;
+export const { 
+  addTransaction,
+  addBudget,
+  deleteBudget,
+  editBudget,
+  setSelectedAccount,
+} = selectedAccountSlice.actions;
 export default selectedAccountSlice.reducer;
